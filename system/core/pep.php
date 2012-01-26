@@ -53,6 +53,26 @@
 		    die(call_user_func_array(array($obj, $action), array_slice($segments, 2)));
 		}
 		
+		public static function show_error($message, $title = 'Error')
+		{
+			$view = APP_DIR . 'views/error.php';
+			$theme = THEME_DIR . Pep::get_setting('theme') . '/error.html';
+			
+			if(file_exists($theme))
+			{
+				$data = array('title' => $title, 'message' => $message);
+				
+				require_once(ROOT_DIR.'system/core/parser.php');
+				
+				$parser = new Parser();
+				die($parser->parse(file_get_contents($theme), $data, 'View::parse_callback'));
+			}
+			else
+			{
+				die(include($view));
+			}
+		}
+		
 		public static function redirect($loc)
 		{
 			header('Location: ' . Pep::get_setting('base_url') . $loc);

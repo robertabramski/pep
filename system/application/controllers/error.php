@@ -13,20 +13,6 @@
 			$template = $this->load_view('error');
 			$template->render($data);
 		}
-		
-		function code($id = 0)
-		{
-			$lang = $this->load_lang(Pep::get_setting('language'));
-			
-			$data = array
-			(
-				'title' 	=> 'Error',
-				'message' 	=> $lang['error'.$id]
-			);
-		
-			$template = $this->load_view('error');
-			$template->render($data);
-		}
 	}
 
 ?>

@@ -52,12 +52,16 @@
 				
 				if(!empty($language))
 				{
-					$lang_file = APP_DIR.'languages/'.strtolower($language).'.php';
+					$lang_file = APP_DIR . 'languages/' .strtolower($language). '.php';
 					
 					if(file_exists($lang_file))
 					{
 						require($lang_file);
 						return $lang[$attributes['name']];
+					}
+					else
+					{
+						Pep::show_error(sprintf('The language file %s.php does not exist.', $language));
 					}
 				}
 			}
@@ -69,8 +73,10 @@
 			
 			if(!empty($language))
 			{
-				$lang_file = APP_DIR.'languages/'.strtolower($language).'.php';
-				if(file_exists($lang_file)) require($lang_file);
+				$file = APP_DIR . 'languages/' .strtolower($language). '.php';
+				
+				if(file_exists($file)) require($file);
+				else Pep::show_error(sprintf('The language file %s.php does not exist.', $language));
 			}
 			
 			if($data) extract($data);
@@ -83,8 +89,8 @@
 			}
 			else
 			{
-				// No view exists at all. Let user know.
-				echo sprintf('The view file %s.php does not exist.', $this->view); 
+				// No view exists at all.
+				Pep::show_error(sprintf('The view file %s.php does not exist.', $this->view));
 			}
 		}
 	}

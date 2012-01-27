@@ -124,6 +124,38 @@
 			header('Location: ' . rtrim(self::get_setting('base_url'), '/') . '/' . $loc);
 		}
 		
+		public static function site_url($loc = '')
+		{
+			return rtrim(self::get_setting('base_url'), '/') . '/' . $loc;
+		}
+		
+		public static function base_url()
+		{
+			return rtrim(self::get_setting('base_url'), '/') . '/';
+		}
+		
+		public static function segment($seg)
+		{
+			if(!is_int($seg)) return false;
+			
+			$parts = explode('/', $_SERVER['REQUEST_URI']);
+	        return isset($parts[$seg]) ? $parts[$seg] : false;
+		}
+		
+		/**
+		 * Executes the PHP print_r function in a pre tag and exits. This is 
+		 * useful for debugging purposes. 
+		 * 
+		 * @access 	public
+		 * @param 	mixed 	$data	The data to print out.
+		 * @return 	void
+		 * 
+		 */
+		public static function print_q($data)
+		{
+			echo '<pre>'; print_r($data); echo '</pre>'; exit();
+		}
+		
 		/**
 		 * Authenticates a user. The password should be hashed with md5
 		 * before passing in as an argument.

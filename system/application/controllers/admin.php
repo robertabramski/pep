@@ -4,6 +4,8 @@
 	{	
 		public function index()
 		{
+			if(!$this->auth->logged_in()) redirect('admin/login');
+			
 			$model = $this->load_model('admin_m');
 			
 			$data = array
@@ -13,7 +15,7 @@
 				'settings'	=> $model->get_settings(),
 				'admin'		=> $model->get_user(1),
 			);
-		
+			
 			$template = $this->load_view('admin');
 			$template->render($data);
 		}
@@ -26,10 +28,8 @@
 			}
 			else
 			{
-				echo 'You must login.';
+				echo 'You are not logged in.';
 			}
-			
-			Pep::print_q($this->auth->decrypt($_COOKIE['bubba']));
 		}
 		
 		public function submit($user, $pass)

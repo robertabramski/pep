@@ -125,19 +125,6 @@
 		}
 		
 		/**
-		 * Executes the PHP print_r function in a pre tag and exits.
-		 * 
-		 * @access 	public
-		 * @param 	mixed 	$data	The data to print out.
-		 * @return 	void
-		 * 
-		 */
-		public static function print_q($data)
-		{
-			echo '<pre>'; print_r($data); echo '</pre>'; exit();
-		}
-		
-		/**
 		 * Authenticates a user. The password should be hashed with md5
 		 * before passing in as an argument.
 		 * 

@@ -9,6 +9,11 @@
 			$this->auth = new Auth();
 		}
 		
+		protected function post($value)
+		{
+			return $_POST[$value];
+		}
+		
 		protected function load_model($name)
 		{
 			$file = APP_DIR . 'models/' . strtolower($name) . '.php';

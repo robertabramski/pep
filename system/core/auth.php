@@ -9,20 +9,13 @@
 		
 		public function __construct()
 		{
-			// Expires in 10 days.
-			$this->expires = time() + (60*60*24) * 10;
-			$this->key = 'ojbrZdBHYnghVjcKQllNb9PYGln6ku';
-			$this->cookie_name = 'bubba';
+			$this->expires = time() + (60*60*24) * floatval(Pep::get_setting('cookie_expiration'));
+			$this->key = Pep::get_setting('cookie_key');
+			$this->cookie_name = Pep::get_setting('cookie_name');
 			
 			if(!isset($_COOKIE[$this->cookie_name]))
 			{
-				$data = array
-				(
-					'added'		=> date("Y-m-d H:i:s", time()),
-					'expires'	=> date("Y-m-d H:i:s", $this->expires),
-				);
-				
-				setcookie($this->cookie_name, $this->encrypt($data), $this->expires, '/');
+				setcookie($this->cookie_name, $this->encrypt(array()), $this->expires, '/');
 			}
 			
 			$this->check_login();
@@ -68,7 +61,7 @@
 			$this->logged_in = false;
 		}
 		
-		public function encrypt($data)
+		private function encrypt($data)
 		{
 			return base64_encode
 			(
@@ -83,7 +76,7 @@
 			);
 		}
 		
-		public function decrypt($data)
+		private function decrypt($data)
 		{
 			return unserialize
 			(

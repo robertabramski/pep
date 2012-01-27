@@ -38,6 +38,7 @@
 	require(CORE_DIR.'model.php');
 	require(CORE_DIR.'view.php');
 	require(CORE_DIR.'controller.php');
+	require(CORE_DIR.'auth.php');
 	
 	Pep::init();
 

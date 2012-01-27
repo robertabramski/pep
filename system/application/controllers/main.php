@@ -2,7 +2,7 @@
 
 	class Main extends Controller 
 	{
-		function index()
+		public function index()
 		{
 			$data = array
 			(

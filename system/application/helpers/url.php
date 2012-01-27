@@ -2,16 +2,21 @@
 
 	class URL
 	{
-		function base_url()
+		public function site_url($loc = '')
 		{
-			return Pep::get_setting('base_url');
+			return rtrim(Pep::get_setting('base_url'), '/') . '/' . $loc;
 		}
 		
-		function segment($seg)
+		public function base_url()
 		{
-			$url = trim($_GET['_url'], '/');
-			$parts = explode('/', $url);
+			return rtrim(Pep::get_setting('base_url'), '/') . '/';
+		}
+		
+		public function segment($seg)
+		{
+			if(!is_int($seg)) return false;
 			
+			$parts = explode('/', $_SERVER['REQUEST_URI']);
 	        return isset($parts[$seg]) ? $parts[$seg] : false;
 		}
 	}

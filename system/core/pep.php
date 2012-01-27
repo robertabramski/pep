@@ -11,6 +11,9 @@
 	 */
 	class Pep
 	{
+		private static $instance;
+		private static $admin_m;
+		
 		/**
 		 * Initializes the PEP framework.
 		 * 
@@ -20,8 +23,17 @@
 		 */
 		public static function init()
 		{
+			if(!self::$instance) self::$instance = new Pep();
+		}
+		
+		private function __construct()
+		{
+			// Load admin model and store instance.
+			require_once(APP_DIR . 'models/admin_m.php');
+			self::$admin_m = new Admin_m();
+			
 			// Set defaults.
-			$controller = Pep::get_setting('default_controller');
+			$controller = self::get_setting('default_controller');
 			$action = 'index';
 			$url = '';
 			
@@ -31,7 +43,7 @@
 		    
 			if($request_url != $script_url)
 			{
-				// Trim url path of its slash
+				// Trim url path of its slash.
 				$url = trim(preg_replace('/'. str_replace('/', '\/', str_replace('index.php', '', $script_url)) .'/', '', $request_url, 1), '/');
 			}
 		    
@@ -51,14 +63,14 @@
 			}
 			else 
 			{
-		        $controller = Pep::get_setting('error_controller');
+		        $controller = self::get_setting('error_controller');
 		        require_once(APP_DIR . 'controllers/' . $controller . '.php');
 			}
 		    
-			// Check for action
+			// Check for action.
 		    if(!method_exists($controller, $action))
 		    {
-		        $controller = Pep::get_setting('error_controller');
+		        $controller = self::get_setting('error_controller');
 		        require_once(APP_DIR . 'controllers/' . $controller . '.php');
 		        $action = 'index';
 		    }
@@ -81,7 +93,7 @@
 		public static function show_error($message, $title = 'Error')
 		{
 			$view = APP_DIR . 'views/error.php';
-			$theme = THEME_DIR . Pep::get_setting('theme') . '/error.html';
+			$theme = THEME_DIR . self::get_setting('theme') . '/error.html';
 			
 			if(file_exists($theme))
 			{
@@ -102,22 +114,22 @@
 		/**
 		 * Redirects to a page in the site.
 		 * 
-		 * @access public
-		 * @param $loc	The location segments to redirect to.
-		 * @return void
+		 * @access 	public
+		 * @param 	string	$loc	The location segments to redirect to.
+		 * @return	void
 		 * 
 		 */
 		public static function redirect($loc)
 		{
-			header('Location: ' . Pep::get_setting('base_url') . $loc);
+			header('Location: ' . rtrim(self::get_setting('base_url'), '/') . '/' . $loc);
 		}
 		
 		/**
 		 * Executes the PHP print_r function in a pre tag and exits.
 		 * 
-		 * @access public
-		 * @param mixed $data	The data to print out.
-		 * @return void
+		 * @access 	public
+		 * @param 	mixed 	$data	The data to print out.
+		 * @return 	void
 		 * 
 		 */
 		public static function print_q($data)
@@ -126,19 +138,36 @@
 		}
 		
 		/**
+		 * Authenticates a user. The password should be hashed with md5
+		 * before passing in as an argument.
+		 * 
+		 * @param string $username	The user to authenticate.
+		 * @param string $password	The hashed password to authenticate.
+		 * 
+		 */
+		public static function auth_user($username, $password)
+		{
+			$users = self::$admin_m->get_users();
+
+			foreach($users as $user)
+			{
+				if($user['user'] == $username && $user['pass'] == $password) return true;
+			}
+			
+			return false;
+		}
+		
+		/**
 		 * Returns a setting value from the database by name.
 		 * 
-		 * @access public
-		 * @param string $name	The name of value to return.
-		 * @return mixed
+		 * @access 	public
+		 * @param 	string 	$name	The name of value to return.
+		 * @return 	mixed
 		 * 
 		 */
 		public static function get_setting($name)
 		{
-			require_once(APP_DIR . 'models/admin_m.php');
-			$model = new Admin_m();
-			
-			return $model->get_setting($name);
+			return self::$admin_m->get_setting($name);
 		}
 	}
 	

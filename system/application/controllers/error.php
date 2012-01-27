@@ -2,7 +2,7 @@
 
 	class Error extends Controller 
 	{	
-		function index()
+		public function index()
 		{
 			$data = array
 			(

@@ -5,6 +5,8 @@
 		public function __construct()
 		{
 			parent::__construct();
+			
+			$this->session = $this->load->helper('session');
 		} 
 		
 		public function index()

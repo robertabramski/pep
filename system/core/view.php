@@ -8,6 +8,8 @@
 		
 		public function __construct($view)
 		{
+			header('Content-type: text/html; charset=utf-8');
+			
 			$this->theme = Pep::get_setting('theme');
 			$this->view = $view;
 			

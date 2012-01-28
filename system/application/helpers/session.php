@@ -1,13 +1,14 @@
 <?php
 
+	/**
+	 * Helps handle session data. Session name must not be blank in the 
+	 * config for this helper to work.
+	 * 
+	 * @author robertabramski
+	 *
+	 */
 	class Session
 	{
-		public function __construct()
-		{
-			session_name(Pep::get_setting('session_name'));
-			session_start();
-		}
-		
 		public function set($name, $value)
 		{
 			$_SESSION[$name] = $value;
@@ -25,8 +26,11 @@
 		
 		public function destroy_all()
 		{
-			$_SESSION = array();
-			session_destroy();
+			if(isset($_SESSION))
+			{
+				$_SESSION = array();
+				session_destroy();
+			}
 		}
 	}
 	

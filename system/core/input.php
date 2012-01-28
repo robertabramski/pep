@@ -10,11 +10,21 @@
 			{
 				$_POST = array_map('stripslashes', $_POST);
 			}
+			
+			foreach($_POST as $key => $value)
+			{
+				$_POST[$key] = $this->sanitize($value);
+			}
 		}
 		
 		public function post($value)
 		{
-			return addslashes($_POST[$value]);
+			return $_POST[$value];
+		}
+		
+		private function sanitize($value)
+		{
+			return strip_tags(addslashes($value));
 		}
 	}
 	

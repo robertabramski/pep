@@ -34,6 +34,15 @@
 			require_once(APP_DIR . 'models/admin_m.php');
 			self::$admin_m = new Admin_m();
 			
+			// Set session for helper if loaded.
+			$session_name = Pep::get_setting('session_name');
+			
+			if(!empty($session_name))
+			{
+				session_name($session_name);
+				session_start();
+			}
+			
 			// Set defaults.
 			$controller = self::get_setting('default_controller');
 			$action = 'index';
@@ -185,8 +194,8 @@
 		 * Authenticates a user. The password should be hashed with md5
 		 * before passing in as an argument.
 		 * 
-		 * @param 	string 	$username	The user to authenticate.
-		 * @param 	string 	$password	The hashed password to authenticate.
+		 * @param 	string 	$username		The user to authenticate.
+		 * @param 	string 	$md5password	The hashed password to authenticate.
 		 * @return 	bool	True if valid user, otherwise false.
 		 * 
 		 */

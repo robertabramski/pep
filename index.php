@@ -40,6 +40,9 @@
 	require(CORE_DIR.'controller.php');
 	require(CORE_DIR.'functions.php');
 	require(CORE_DIR.'auth.php');
+	require(CORE_DIR.'input.php');
+	require(CORE_DIR.'session.php');
+	require(CORE_DIR.'load.php');
 	
 	Pep::init();
 

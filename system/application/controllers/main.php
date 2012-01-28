@@ -9,7 +9,7 @@
 				'title' => 'Main'
 			);
 			
-			$template = $this->load_view('main');
+			$template = $this->load->view('main');
 			$template->render($data);
 		}
 	}

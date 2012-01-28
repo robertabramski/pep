@@ -10,7 +10,7 @@
 				'message' 	=> '404 Not Found.'
 			);
 		
-			$template = $this->load_view('error');
+			$template = $this->load->view('error');
 			$template->render($data);
 		}
 	}

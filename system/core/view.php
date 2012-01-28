@@ -52,11 +52,11 @@
 				
 				if(!empty($language))
 				{
-					$lang_file = APP_DIR . 'languages/' .strtolower($language). '.php';
+					$file = APP_DIR . 'languages/' .strtolower($language). '.php';
 					
-					if(file_exists($lang_file))
+					if(file_exists($file))
 					{
-						require($lang_file);
+						require_once($file);
 						return $lang[$attributes['name']];
 					}
 					else
@@ -75,7 +75,7 @@
 			{
 				$file = APP_DIR . 'languages/' .strtolower($language). '.php';
 				
-				if(file_exists($file)) require($file);
+				if(file_exists($file)) require_once($file);
 				else Pep::show_error(sprintf('The language file %s.php does not exist.', $language));
 			}
 			

@@ -1,8 +1,9 @@
 <?php
 	
 	/**
-	 * PEP framework class. The PEP framework is a
-	 * fork of the PIP framework by Gilbert Pellegrom.
+	 * The PEP framework class. The PEP framework is a fork of the PIP framework by Gilbert Pellegrom.
+	 * This class holds the initialization logic for the system. It also contains static functions
+	 * used throughout core classes for dealing with user and settings data contained in the database.
 	 *
 	 * @author     Robert Abramski
 	 * @license    MIT License
@@ -13,6 +14,7 @@
 	{
 		private static $instance;
 		private static $admin_m;
+		private static $authed_user;
 		
 		/**
 		 * Initializes the PEP framework.
@@ -124,16 +126,39 @@
 			header('Location: ' . rtrim(self::get_setting('base_url'), '/') . '/' . $loc);
 		}
 		
+		/**
+		 * Returns the site url based on the base url set.
+		 * 
+		 * @access	public
+		 * @see 	base_url()
+		 * @param 	string $loc The location segment of segments to append to the base url.
+		 * @return 	string
+		 * 
+		 */
 		public static function site_url($loc = '')
 		{
 			return rtrim(self::get_setting('base_url'), '/') . '/' . $loc;
 		}
 		
+		/**
+		 * Returns the base url as set in the settings section of the admin.
+		 * 
+		 * @access	public
+		 * @return	string
+		 * 
+		 */
 		public static function base_url()
 		{
 			return rtrim(self::get_setting('base_url'), '/') . '/';
 		}
 		
+		/**
+		 * Returns the url segement at the requested position. 
+		 * 
+		 * @param 	int 	$seg 	The position of the segment to return.
+		 * @return 	string	The segment at the specified position.
+		 * 
+		 */
 		public static function segment($seg)
 		{
 			if(!is_int($seg)) return false;
@@ -160,20 +185,37 @@
 		 * Authenticates a user. The password should be hashed with md5
 		 * before passing in as an argument.
 		 * 
-		 * @param string $username	The user to authenticate.
-		 * @param string $password	The hashed password to authenticate.
+		 * @param 	string 	$username	The user to authenticate.
+		 * @param 	string 	$password	The hashed password to authenticate.
+		 * @return 	bool	True if valid user, otherwise false.
 		 * 
 		 */
-		public static function auth_user($username, $password)
+		public static function auth_user($username, $md5pass)
 		{
 			$users = self::$admin_m->get_users();
 
 			foreach($users as $user)
 			{
-				if($user['user'] == $username && $user['pass'] == $password) return true;
+				if($user['user'] == $username && $user['pass'] == $md5pass)
+				{
+					self::$authed_user = $user;
+					return true;
+				}
 			}
 			
 			return false;
+		}
+		
+		/**
+		 * Gets the active user currently logged in as an array.
+		 * 
+		 * @access	public
+		 * @return	mixed	The user as an array or false.
+		 * 
+		 */
+		public static function get_authed_user()
+		{
+			return self::$authed_user ? self::$authed_user : false;
 		}
 		
 		/**

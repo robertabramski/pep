@@ -15,7 +15,7 @@
 			
 			if(!isset($_COOKIE[$this->cookie_name]))
 			{
-				setcookie($this->cookie_name, $this->encrypt(array()), $this->expires, '/');
+				setcookie($this->cookie_name, $this->encrypt(array()), $this->expires, '/', '', false, true);
 			}
 			
 			$this->check_login();
@@ -33,6 +33,12 @@
 			if($user && $pass) $this->logged_in = Pep::auth_user($user, $pass);
 		}
 		
+		public function authed_user($value = '')
+		{
+			$user = Pep::get_authed_user();
+			return empty($value) ? $user : $user[$value];
+		}
+		
 		public function logged_in()
 		{
 			return $this->logged_in;
@@ -46,9 +52,15 @@
 				$data['user'] = $user;
 				$data['pass'] = md5($pass);
 				
-				setcookie($this->cookie_name, $this->encrypt($data), $this->expires, '/');
+				setcookie($this->cookie_name, $this->encrypt($data), $this->expires, '/', '', false, true);
 				$this->logged_in = true;
 			}
+			else
+			{
+				$this->logged_in = false;
+			}
+			
+			return $this->logged_in;
 		}
 		
 		public function logout()
@@ -57,7 +69,7 @@
 			unset($data['user']);
 			unset($data['pass']);
 			
-			setcookie($this->cookie_name, $this->encrypt($data), $this->expires, '/');
+			setcookie($this->cookie_name, $this->encrypt($data), $this->expires, '/', '', false, true);
 			$this->logged_in = false;
 		}
 		

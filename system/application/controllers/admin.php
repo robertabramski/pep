@@ -7,6 +7,7 @@
 			parent::__construct();
 			
 			$this->session = $this->load->helper('session');
+			$this->validate = $this->load->helper('validate');
 		} 
 		
 		public function index()
@@ -39,14 +40,29 @@
 				$user = $this->input->post('user');
 				$pass = $this->input->post('pass');
 				
-				if($this->auth->login($user, $pass))
+				$rules = array
+				(
+					'user' => array('required', 'alpha_num'),
+					'user' => array('password', 'alpha_num_dash')
+				);
+				
+				if($this->validate->run($rules))
 				{
-					redirect('admin');
+					if($this->auth->login($user, $pass))
+					{
+						redirect('admin');
+					}
+					else
+					{
+						$this->session->set('user', $user);
+						$this->session->set('failed', 'The login was invalid.');
+						redirect('admin/login');
+					}
 				}
 				else
 				{
 					$this->session->set('user', $user);
-					$this->session->set('failed', 'The login was invalid.');
+					$this->session->set('failed', 'Validation failed.');
 					redirect('admin/login');
 				}
 			}

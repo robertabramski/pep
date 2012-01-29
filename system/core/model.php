@@ -1,4 +1,6 @@
 <?php
+	
+	namespace models;
 
 	/**
 	 * This class is the base class for all models and contains functions for 
@@ -33,12 +35,12 @@
 			switch(true)
 			{
 				case class_exists('PDO'):
-					$this->db = new PDO('sqlite:'.$this->path);
+					$this->db = new \PDO('sqlite:'.$this->path);
 					if($this->db) $this->type = 'PDO';
 				break;
 				
 				case class_exists('SQLite3'):
-					$this->db = new SQLite3($this->path);
+					$this->db = new \SQLite3($this->path);
 					if($this->db) $this->type = 'SQLite3';
 				break; 
 			}

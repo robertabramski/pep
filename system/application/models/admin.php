@@ -1,6 +1,8 @@
 <?php
 
-	class Admin_m extends Model 
+	namespace models;
+
+	class Admin extends Model
 	{	
 		public function get_setting($name)
 		{

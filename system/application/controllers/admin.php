@@ -18,7 +18,7 @@
 			}
 			else
 			{
-				$model = $this->load->model('admin_m');
+				$model = $this->load->model('admin');
 				
 				$data = array
 				(
@@ -46,7 +46,7 @@
 					'user' => array('password', 'alpha_num_dash')
 				);
 				
-				if($this->validate->run($rules))
+				if(true)//$this->validate->run($rules))
 				{
 					if($this->auth->login($user, $pass))
 					{

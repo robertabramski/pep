@@ -3,7 +3,7 @@
 	/**
 	 * The PEP framework class. The PEP framework is a fork of the PIP framework by Gilbert Pellegrom.
 	 * This class holds the initialization logic for the system. It also contains static functions
-	 * used throughout core classes for dealing with user and settings data contained in the database.
+	 * used throughout for dealing with user and settings data contained in the database.
 	 *
 	 * @author     Robert Abramski
 	 * @license    MIT License

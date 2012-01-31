@@ -43,10 +43,12 @@
 				$rules = array
 				(
 					'user' => array('required', 'alpha_num'),
-					'user' => array('password', 'alpha_num_dash')
+					'pass' => array('required', 'alpha_num_dash')
 				);
 				
-				if(true)//$this->validate->run($rules))
+				$this->validate->set_message('required', 'The %s field cannot be left blank.');
+				
+				if($this->validate->run($rules))
 				{
 					if($this->auth->login($user, $pass))
 					{
@@ -56,13 +58,17 @@
 					{
 						$this->session->set('user', $user);
 						$this->session->set('failed', 'The login was invalid.');
+						
 						redirect('admin/login');
 					}
 				}
 				else
 				{
-					$this->session->set('user', $user);
-					$this->session->set('failed', 'Validation failed.');
+					$results = $this->validate->get_results();
+					
+					$this->session->set('failed', 'Validation failed. See errors below.');
+					$this->session->set('errors', serialize($results));
+					
 					redirect('admin/login');
 				}
 			}
@@ -75,11 +81,13 @@
 				else
 				{
 					$failed = $this->session->get('failed');
+					$errors = $this->session->get('errors');
 					
 					$data = array
 					(
 						'title' 	=> 'Login',
 						'message' 	=> empty($failed) ? 'You are not logged in.' : $failed,
+						'errors'	=> empty($errors) ? null : unserialize($errors),
 						'user'		=> $this->session->get('user')
 					);
 					

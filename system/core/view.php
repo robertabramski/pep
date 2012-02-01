@@ -33,7 +33,10 @@
 				if(file_exists($this->template))
 				{
 					$parser = new Parser();
-					echo $parser->parse(file_get_contents($this->template), $data, 'View::parse_callback');
+					$buffer = $parser->parse(file_get_contents($this->template), $data, 'View::parse_template');
+					
+					$minified = Pep::get_setting('minify');
+					echo ($minified ? View::minify($buffer) : $buffer);
 				}
 				else
 				{
@@ -44,12 +47,12 @@
 			}
 		}
 		
-		public static function parse_callback($name, $attributes, $content)
+		public static function parse_template($name, $attributes, $content)
 		{
 			if($name == 'partial')
 			{
 				$parser = new Parser();
-				return $parser->parse(Pep::partial($attributes['name']), array(), 'View::parse_callback');
+				return $parser->parse(Pep::partial($attributes['name']));
 			}
 			else if($name == 'lang')
 			{
@@ -72,6 +75,13 @@
 			}
 		}
 		
+		public static function minify($buffer)
+		{
+			$search = array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s');
+			$replace = array('>', '<', '\\1');
+			return preg_replace($search, $replace, $buffer);
+		}
+		
 		private function render_view($data = null)
 		{
 			$language = Pep::get_setting('language');
@@ -88,9 +98,10 @@
 			
 			if(file_exists($this->template))
 			{
-				ob_start();
+				$minified = Pep::get_setting('minify');
+				$minified ? ob_start('View::minify') : ob_start();
 				require($this->template);
-				echo ob_get_clean();
+				ob_end_flush();
 			}
 			else
 			{

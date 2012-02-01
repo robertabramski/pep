@@ -1,6 +1,13 @@
-<?php partial('header'); ?>
-
-	    <div id="content">
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><?php echo $title; ?></title>
+		<meta name="author" content="" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+	</head>
+	<body>
+		<div id="content">
 	        <h1><?php echo $title; ?></h1>
 	        <h2><?php echo $message; ?></h2>
 	        <?php if($errors): ?>
@@ -17,5 +24,5 @@
 		    	<input type="submit" value="Submit" />
 		    </form>
 	    </div>
-	    
-<?php partial('footer'); ?>
+	</body>
+</html>

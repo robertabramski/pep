@@ -27,20 +27,6 @@
 			return $view;
 		}
 		
-		public function plugin($name)
-		{
-			$file = APP_DIR . 'plugins/' . strtolower($name) . '.php';
-			
-			if(file_exists($file))
-			{
-				require_once($file);
-			}
-			else
-			{
-				Pep::show_error(sprintf('The plugin file %s.php failed to load.', $name));
-			}
-		}
-		
 		public function lang($name)
 		{
 			$file = APP_DIR . 'languages/' . strtolower($name) . '.php';

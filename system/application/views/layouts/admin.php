@@ -1,5 +1,12 @@
-<?php partial('header'); ?>
-
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><?php echo $title; ?></title>
+		<meta name="author" content="" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+	</head>
+	<body>
 	    <div id="content">
 	    	<a href="<?php echo site_url('admin/logout'); ?>">Logout</a>
 	        <h1><?php echo $title; ?></h1>
@@ -11,5 +18,5 @@
 		    <?php endforeach; ?>
 		    </ul>
 	    </div>
-	    
-<?php partial('footer'); ?>
+	</body>
+</html>

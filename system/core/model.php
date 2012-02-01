@@ -16,15 +16,6 @@
 		private $table;
 		
 		/**
-		 * Destructs the class.
-		 * 
-		 */
-		public function __destruct()
-		{
-			if($this->db) $this->close();
-		}
-		
-		/**
 		 * Constructs the class. 
 		 * 
 		 */
@@ -44,6 +35,15 @@
 					if($this->db) $this->type = 'SQLite3';
 				break; 
 			}
+		}
+		
+		/**
+		 * Destructs the class.
+		 * 
+		 */
+		public function __destruct()
+		{
+			if($this->db) $this->close();
 		}
 		
 		/**

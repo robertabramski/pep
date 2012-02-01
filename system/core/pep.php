@@ -3,7 +3,7 @@
 	/**
 	 * The PEP framework class. The PEP framework is a fork of the PIP framework by Gilbert Pellegrom.
 	 * This class holds the initialization logic for the system. It also contains static functions
-	 * used throughout for dealing with user and settings data contained in the database.
+	 * to make certain function accessible throughout the system.
 	 *
 	 * @author     Robert Abramski
 	 * @license    MIT License
@@ -103,7 +103,7 @@
 		 */
 		public static function show_error($message, $title = 'Error')
 		{
-			$view = APP_DIR . 'views/error.php';
+			$view = APP_DIR . 'views/layouts/error.php';
 			$theme = THEME_DIR . self::get_setting('theme') . '/error.html';
 			
 			if(file_exists($theme))
@@ -120,6 +120,14 @@
 				// Just show the view.
 				die(include($view));
 			}
+		}
+		
+		public function partial($name)
+		{
+			$theme = self::get_setting('theme');
+			
+			if(!empty($theme)) return file_get_contents(THEME_DIR . $theme . '/partials/' . $name . '.html');
+			else include(APP_DIR . 'views/partials/' . $name . '.php');
 		}
 		
 		/**

@@ -9,4 +9,6 @@
 	function base_url() { return Pep::base_url(); }
 	function segment($seg) { return Pep::segment($seg); }
 	
+	function partial($name) { Pep::partial($name); }
+	
 ?>

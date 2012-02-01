@@ -1,4 +1,4 @@
-<?php include('header.php'); ?>
+<?php partial('header'); ?>
 
 	    <div id="content">
 	        <h1><?php echo $title; ?></h1>
@@ -18,4 +18,4 @@
 		    </form>
 	    </div>
 	    
-<?php include('footer.php'); ?>
+<?php partial('footer'); ?>

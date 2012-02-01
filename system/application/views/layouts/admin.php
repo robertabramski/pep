@@ -1,4 +1,4 @@
-<?php include('header.php'); ?>
+<?php partial('header'); ?>
 
 	    <div id="content">
 	    	<a href="<?php echo site_url('admin/logout'); ?>">Logout</a>
@@ -12,4 +12,4 @@
 		    </ul>
 	    </div>
 	    
-<?php include('footer.php'); ?>
+<?php partial('footer'); ?>

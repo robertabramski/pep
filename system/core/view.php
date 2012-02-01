@@ -8,19 +8,17 @@
 		
 		public function __construct($view)
 		{
-			header('Content-type: text/html; charset=utf-8');
-			
 			$this->theme = Pep::get_setting('theme');
 			$this->view = $view;
 			
 			if(empty($this->theme))
 			{
-				$this->template = APP_DIR .'views/'. $view .'.php';
+				$this->template = APP_DIR . 'views/layouts/' . $view . '.php';
 			}
 			else
 			{
-				$this->template = THEME_DIR . $this->theme .'/'. $view .'.html';
-				require_once(ROOT_DIR.'system/core/parser.php');
+				$this->template = THEME_DIR . $this->theme . '/layouts/' . $view . '.html';
+				require_once(ROOT_DIR . 'system/core/parser.php');
 			}
 		}
 		
@@ -40,7 +38,7 @@
 				else
 				{
 					// Fall back to application view if no theme file exists. 
-					$this->template = APP_DIR .'views/'. $this->view .'.php';
+					$this->template = APP_DIR .'views/layouts/'. $this->view .'.php';
 					$this->render_view($data);
 				}
 			}
@@ -48,13 +46,18 @@
 		
 		public static function parse_callback($name, $attributes, $content)
 		{
-			if($name == 'lang')
+			if($name == 'partial')
+			{
+				$parser = new Parser();
+				return $parser->parse(Pep::partial($attributes['name']), array(), 'View::parse_callback');
+			}
+			else if($name == 'lang')
 			{
 				$language = Pep::get_setting('language');
 				
 				if(!empty($language))
 				{
-					$file = APP_DIR . 'languages/' .strtolower($language). '.php';
+					$file = APP_DIR . 'languages/' . strtolower($language) . '.php';
 					
 					if(file_exists($file))
 					{

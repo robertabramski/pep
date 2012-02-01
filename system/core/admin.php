@@ -15,7 +15,7 @@
 		{
 			if($this->auth->logged_in())
 			{
-				$model = $this->load->model('admin');
+				$model = $this->load->model('settings');
 				
 				$data = array
 				(

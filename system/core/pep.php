@@ -13,7 +13,7 @@
 	class Pep
 	{
 		private static $instance;
-		private static $admin;
+		private static $model;
 		private static $authed_user;
 		
 		/**
@@ -30,9 +30,8 @@
 		
 		private function __construct()
 		{
-			// Load admin model and store instance.
-			require_once(APP_DIR . 'models/admin.php');
-			self::$admin = new models\Admin();
+			// Add instance model base class for retrieving settings, users.
+			self::$model = new models\Model();
 			
 			// Set session for helper if loaded.
 			$session_name = Pep::get_setting('session_name');
@@ -209,7 +208,8 @@
 		 */
 		public static function auth_user($username, $md5pass)
 		{
-			$users = self::$admin->get_users();
+			self::$model->from('users');
+			$users = self::$model->select('*');
 
 			foreach($users as $user)
 			{
@@ -245,7 +245,9 @@
 		 */
 		public static function get_setting($name)
 		{
-			return self::$admin->get_setting($name);
+			self::$model->from('settings');
+			$result = self::$model->select('value', array('name' => $name), 1);
+			return $result[0]['value'];
 		}
 	}
 	

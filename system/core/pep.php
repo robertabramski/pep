@@ -31,7 +31,7 @@
 		private function __construct()
 		{
 			// Add instance model base class for retrieving settings, users.
-			self::$model = new models\Model();
+			self::$model = new Model();
 			
 			// Set session for helper if loaded.
 			$session_name = Pep::get_setting('session_name');

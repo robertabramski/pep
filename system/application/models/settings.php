@@ -1,7 +1,5 @@
 <?php
 	
-	namespace models;
-	
 	class Settings extends Model
 	{
 		public function __construct()

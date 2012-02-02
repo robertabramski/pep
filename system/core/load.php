@@ -1,7 +1,5 @@
 <?php
 
-	use \models;
-
 	class Load
 	{
 		public function model($name)
@@ -11,7 +9,6 @@
 			if(file_exists($file))
 			{
 				require_once($file);
-				$name = 'models\\'.$name;
 				$model = new $name;
 				return $model;
 			}

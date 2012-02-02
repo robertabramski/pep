@@ -1,7 +1,5 @@
 <?php
 	
-	namespace models;
-
 	/**
 	 * This class is the base class for all models and contains functions for 
 	 * dealing with a SQLite 3 database. 
@@ -31,12 +29,12 @@
 			switch(true)
 			{
 				case class_exists('PDO'):
-					$this->db = new \PDO('sqlite:'.$this->path);
+					$this->db = new PDO('sqlite:'.$this->path);
 					if($this->db) $this->type = 'PDO';
 				break;
 				
 				case class_exists('SQLite3'):
-					$this->db = new \SQLite3($this->path);
+					$this->db = new SQLite3($this->path);
 					if($this->db) $this->type = 'SQLite3';
 				break; 
 			}
@@ -251,7 +249,7 @@
 				
 				switch($this->type)
 				{
-					case 'PDO': return $result->fetchAll(\PDO::FETCH_ASSOC);
+					case 'PDO': return $result->fetchAll(PDO::FETCH_ASSOC);
 					case 'SQLite3':
 						$arr = array(); $i = 0;
 						while($res = $result->fetchArray(SQLITE3_ASSOC)) { $arr[$i] = $res; $i++; }

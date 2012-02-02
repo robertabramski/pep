@@ -46,7 +46,7 @@
 					{
 						// Load the model to get info set.
 						require_once(APP_DIR . 'models/' . $file);
-						$name = 'models\\'.$this->string->remove_ext($file);
+						$name = $this->string->remove_ext($file);
 						$model = new $name;
 						
 						// No rows yet.

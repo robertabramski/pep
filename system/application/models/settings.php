@@ -10,7 +10,7 @@
 			$this->fields = array
 			(
 				'setting_id'	=> array('type' => 'pk'),
-				'name' 			=> array('type' => 'label', 'name' => 'Name'),
+				'name' 			=> array('name' => 'Name'),
 				'value' 		=> array('type' => 'text', 'name' => 'Value')
 			);
 		}

@@ -13,24 +13,24 @@
 	        <h2><?php echo $lang['welcome']; ?> <?php echo $user; ?></h2>
 	        
 	        <?php if($sections): foreach($sections as $section): if($section['rows']): ?>
-		        <h3><?php echo $section['menu']; ?>
-		        	<a href="<?php echo site_url('admin/create/'.$section['table']); ?>">Create</a>
-		        </h3>
-		        <table>
-			        <thead>
-			        	<?php foreach($section['fields'] as $field): ?>
-			        	<td><?php echo $field['name']; ?></td>
-			        	<?php endforeach; ?>
-			        </thead>
-		        	<?php foreach($section['rows'] as $row): ?>
-		        	<tr>
-		        	<?php foreach($row as $key => $value): ?>
-		        		<td><?php echo $value; ?></td>
+	        <h3>
+	        	<?php echo $section['menu']; ?>
+	        	<a href="<?php echo site_url('admin/create/'.$section['table']); ?>">Create</a>
+	        </h3>
+	        <table>
+				<thead>
+		        	<?php foreach($section['fields'] as $field): ?>
+		        	<td><?php echo $field['name']; ?></td>
 		        	<?php endforeach; ?>
-		        	</tr>
-		       		<?php endforeach; ?>
-		        </table>
-		    </form>       
+		        </thead>
+	        	<?php foreach($section['rows'] as $row): ?>
+	        	<tr>
+		        	<?php foreach($row as $key => $value): ?>
+		        	<td><?php echo $value; ?></td>
+		        	<?php endforeach; ?>
+	        	</tr>
+	       		<?php endforeach; ?>
+	        </table>   
 	        <?php endif; endforeach; endif; ?>
 	        
 	    </div>

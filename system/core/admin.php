@@ -33,19 +33,79 @@
 			}
 		}
 		
-		public function create($table)
+		public function create($name)
 		{
-			
+			$model = $this->load->model($name);
 		}
 		
-		public function update($table, $id)
+		public function update($name = '', $id = '')
 		{
+			if(empty($name) || empty($id)) show_error();
 			
+			$model = $this->load->model($name);
+			$fields = $model->fields;
+			
+			foreach($fields as $key => $value)
+			{
+				$opts =& $fields[$key];
+				
+				if($opts['type'] == 'pk')
+				{
+					// Get primary key name for query.
+					$pk = $key;
+					
+					// Primary key name defaults to Id.
+			        if(!isset($opts['name'])) $opts['name'] = 'Id';
+				}
+			}
+			
+			// Select item to update.
+			$model->from($model->table);
+			$rows = $model->select(array_keys($model->fields), array($pk => $id), 1);
+			$row = $rows[0];
+			
+			foreach($fields as $key => $value)
+			{
+				switch($fields[$key]['type'])
+		        {
+		        	case 'select':
+		        		 
+		        		$options = '';
+		        		
+		        		foreach($fields[$key]['options'] as $option) 
+		        		{
+		        			$selected = ($option == $row[$key] ? ' selected="selected"' : '');
+		        			$options .= '<option'.$selected.'>'.$option.'</option>';
+		        		}
+		        		
+		        		$row[$key] = '<select name="'.$key.'">'.$options.'</select>';
+		        		
+		        	break;
+		        	
+		        	//case 'pk':			unset($row[$key]); break;
+		        	case 'label':		$row[$key] = '<label>'.$row[$key].'</label>'; break;
+		        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" value="'.$row[$key].'" />'; break;
+		        	case 'password':	$row[$key]  = '<input name="'.$key.'" type="password" />'; break;
+		        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'">'.$row[$key].'</textarea>'; break;
+		        	case 'none':	 	$row[$key] = $row[$key]; break;
+		        }
+			}
+			
+			$data = array
+			(
+				'title' 	=> 'Admin',
+				'message' 	=> 'Update '. $model->menu,
+				'fields'	=> $fields,
+				'row'		=> $row
+			);
+			
+			$template = $this->load->view('update');
+			$template->render($data);
 		}
 		
-		public function delete($table, $id)
+		public function delete($name, $id)
 		{
-			
+			$model = $this->load->model($name);
 		}
 		
 		public function login($action = '')
@@ -147,9 +207,8 @@
 					if($file != '..' && $file != '.')
 					{
 						// Load each model.
-						require_once(APP_DIR . 'models/' . $file);
 						$name = $this->string->remove_ext($file);
-						$model = new $name;
+						$model = $this->load->model($name);
 						
 						// No rows yet.
 						$rows = null;
@@ -168,6 +227,7 @@
 							$rows = $model->select(array_keys($model->fields));
 						}
 						
+						// Create sections array.
 						$sections[] = array
 						(
 							'rows'			=> $rows,
@@ -212,35 +272,12 @@
 			        			
 			        			// Nice name doesn't exist, use column name.
 			        			if(!isset($opts['name'])) $opts['name'] = $key;
-			        			
-			        			/*switch($display['type'])
-			        			{
-			        				case 'select': 
-			        					
-			        					$row[$key] =  '<select name="'.$section['table'].'[]">';
-			        					
-			        					foreach($display['options'] as $option)
-			        					{
-			        						$row[$key] .= '<option'.($option == $col ? ' selected="selected"' : '').'>'.$option.'</option>';
-			        					}
-			        					
-			        					$row[$key] .=  '</select>';
-			        					
-			        				break;
-			        				
-			        				case 'pk':			$row[$key] = '<a href="'.site_url('admin/update/' . $section['table'] . '/' . $col).'">Update</a>'; break;
-			        				case 'label':		$row[$key] = '<label>'.$col.'</label>'; break;
-			        				case 'text': 		$row[$key] = '<input name="'.$section['table'].'[]" type="text" value="'.$col.'" />'; break;
-			        				case 'password': 	$row[$key] = '<input name="'.$section['table'].'[]" type="password" value="'.$col.'" />'; break;
-			        				case 'textarea': 	$row[$key] = '<textarea>'.$col.'</textarea>'; break;
-			        				default: 			$row[$key] = $col; break;
-			        			}*/
 			        		}
 						}
 					}
 				}
 			}
-			//print_q($sections);
+			
 			return $sections;
 		}
 	}

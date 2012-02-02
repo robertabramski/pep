@@ -1,7 +1,7 @@
 <?php
 	
 	function redirect($loc) { Pep::redirect($loc); }
-	function show_error($message, $title = 'Error') { Pep::show_error($message, $title); }
+	function show_error($message = '', $title = 'Error') { Pep::show_error($message, $title); }
 	
 	function print_q($data) { Pep::print_q($data); }
 	

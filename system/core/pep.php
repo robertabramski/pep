@@ -100,8 +100,10 @@
 		 * @return	void
 		 * 
 		 */
-		public static function show_error($message, $title = 'Error')
+		public static function show_error($message = '', $title = 'Error')
 		{
+			if(empty($message)) $message = '404 Not Found.';
+			
 			$view = APP_DIR . 'views/layouts/error.php';
 			$theme = THEME_DIR . self::get_setting('theme') . '/error.html';
 			

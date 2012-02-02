@@ -5,7 +5,7 @@
 	 * This class holds the initialization logic for the system. It also contains static functions
 	 * to make certain function accessible throughout the system.
 	 *
-	 * @author     Robert Abramski
+	 * @author     robertabramski
 	 * @license    MIT License
 	 * @copyright  2012 Robert Abramski
 	 * 

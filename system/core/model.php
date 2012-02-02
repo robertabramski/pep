@@ -13,7 +13,12 @@
 	{
 		private $db;
 		private $type;
-		private $table;
+		private $path;
+		
+		public $menu;
+		public $table;
+		public $allow;
+		public $fields;
 		
 		/**
 		 * Constructs the class. 
@@ -246,10 +251,10 @@
 				
 				switch($this->type)
 				{
-					case 'PDO': 	return $result->fetchAll();
+					case 'PDO': return $result->fetchAll(\PDO::FETCH_ASSOC);
 					case 'SQLite3':
 						$arr = array(); $i = 0;
-						while($res = $result->fetchArray()) { $arr[$i] = $res; $i++; }
+						while($res = $result->fetchArray(SQLITE3_ASSOC)) { $arr[$i] = $res; $i++; }
 						return $arr;
 				}
 			}

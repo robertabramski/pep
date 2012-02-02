@@ -9,19 +9,18 @@
 			// Load helpers in the constructor.
 			$this->session = $this->load->helper('session');
 			$this->validate = $this->load->helper('validate');
+			$this->string = $this->load->helper('string');
 		} 
 		
 		public function index()
 		{
 			if($this->auth->logged_in())
 			{
-				$model = $this->load->model('settings');
-				
 				$data = array
 				(
 					'title' 	=> 'Admin',
 					'message' 	=> 'Welcome to admin.',
-					'settings'	=> $model->get_settings(),
+					'sections'	=> $this->get_admin_sections(),
 					'user'		=> $this->auth->authed_user('user')
 				);
 				
@@ -34,11 +33,55 @@
 			}
 		}
 		
+		private function get_admin_sections()
+		{
+			// Scan model directory.
+			$files = scandir(APP_DIR . 'models/');
+			
+			if($files)
+			{
+				foreach($files as $file)
+				{
+					if($file != '..' && $file != '.')
+					{
+						// Load the model to get info set.
+						require_once(APP_DIR . 'models/' . $file);
+						$name = 'models\\'.$this->string->remove_ext($file);
+						$model = new $name;
+						
+						// No rows yet.
+						$rows = null;
+						
+						// Check role to see if user can see this.
+						if(in_array($this->auth->authed_user('role'), $model->allow))
+						{
+							$model->from($model->table);
+							$rows = $model->select(array_keys($model->fields));
+						}
+						
+						$sections[] = array
+						(
+							'menu' 		=> $model->menu,
+							'table'		=> $model->table,
+							'fields' 	=> $model->fields,
+							'rows'		=> $rows
+						);
+					}
+				}
+			}
+			
+			return $sections;
+		}
+		
 		public function login($action = '')
 		{
 			// If segment is login submission.
 			if($action == 'submit')
 			{
+				// Get POST variables.
+				$user = $this->input->post('user');
+				$pass = $this->input->post('pass');
+				
 				$rules = array
 				(
 					// Rule array is the POST field name and an array of validate functions to run.
@@ -51,10 +94,6 @@
 				
 				if($this->validate->run($rules))
 				{
-					// Get POST variables.
-					$user = $this->input->post('user');
-					$pass = $this->input->post('pass');
-					
 					// Check credentials.
 					if($this->auth->login($user, $pass))
 					{
@@ -75,6 +114,7 @@
 					$results = $this->validate->get_results();
 					
 					// Set session data. Serialize validation results for display on redirect.
+					$this->session->set('user', $user);
 					$this->session->set('failed', 'Validation failed. See errors below.');
 					$this->session->set('errors', serialize($results));
 					
@@ -106,7 +146,9 @@
 					$template->render($data);
 					
 					// Session data no longer needed.
-					$this->session->destroy_all();
+					$this->session->destroy('user');
+					$this->session->destroy('failed');
+					$this->session->destroy('errors');
 				}
 			}
 		}

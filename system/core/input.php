@@ -24,6 +24,12 @@
 		
 		private function sanitize($value)
 		{
+			if(is_array($value))
+			{
+				//TODO: Sanitize this right.
+				return $value;
+			}
+			
 			return strip_tags(addslashes($value));
 		}
 	}

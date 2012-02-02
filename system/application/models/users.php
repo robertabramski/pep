@@ -8,9 +8,10 @@
 			
 			$this->fields = array
 			(
-				'user' => array('type' => 'label'),
-				'pass' => array('type' => 'password'),
-				'role' => array('type' => 'select', 'options' => array('user', 'admin'))
+				'user_id' 	=> array('type' => 'pk'),
+				'user' 		=> array('type' => 'text', 'name' => 'Username'),
+				'pass' 		=> array('type' => 'password', 'name' => 'Password'),
+				'role' 		=> array('type' => 'select', 'name' => 'Role', 'options' => array('user', 'admin'))
 			);
 		}
 		

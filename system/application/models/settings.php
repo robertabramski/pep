@@ -6,10 +6,12 @@
 		{
 			parent::__construct();
 			
+			$this->deletable = false;
 			$this->fields = array
 			(
-				'name' 	=> array('type' => 'label'),
-				'value' => array('type' => 'text')
+				'setting_id'	=> array('type' => 'pk'),
+				'name' 			=> array('type' => 'label', 'name' => 'Name'),
+				'value' 		=> array('type' => 'text', 'name' => 'Value')
 			);
 		}
 		

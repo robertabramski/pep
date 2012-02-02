@@ -15,8 +15,10 @@
 		
 		public $menu;
 		public $table;
-		public $allow;
+		public $allow = array('admin');
 		public $fields;
+		public $updateable = true;
+		public $deletable = true;
 		
 		/**
 		 * Constructs the class. 
@@ -42,9 +44,6 @@
 			// Set names intuitively from class name.
 			$this->table = strtolower(get_class($this));
 			$this->menu = ucfirst(strtolower(get_class($this)));
-			
-			// By default, only admins can see everything.
-			$this->allow = array('admin');
 		}
 		
 		/**

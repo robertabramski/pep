@@ -33,6 +33,21 @@
 			}
 		}
 		
+		public function create($table)
+		{
+			
+		}
+		
+		public function update($table, $id)
+		{
+			
+		}
+		
+		public function delete($table, $id)
+		{
+			
+		}
+		
 		public function login($action = '')
 		{
 			// If segment is login submission.
@@ -155,49 +170,76 @@
 						
 						$sections[] = array
 						(
-							'menu' 		=> $model->menu,
-							'fields' 	=> $model->fields,
-							'rows'		=> $rows
+							'rows'			=> $rows,
+							'menu' 			=> $model->menu,
+							'table'			=> $model->table,
+							'fields' 		=> $model->fields,
+							'updateable' 	=> $model->updateable,
+							'deletable' 	=> $model->deletable
 						);
 					}
 				}
 				
-				// Loop sections and add markup as defined by fields array.
+				// Loop sections to post process.
 				foreach($sections as &$section)
 				{
-					foreach($section['rows'] as &$row)
+					if($section['rows'])
 					{
-		        		foreach($row as $key => $value)
-		        		{
-		        			$col = $row[$key]; 
-		        			$display = $section['fields'][$key];
-		        			
-		        			switch($display['type'])
-		        			{
-		        				case 'select': 
-		        					
-		        					$row[$key] =  '<select>';
-		        					
-		        					foreach($display['options'] as $option)
-		        					{
-		        						$row[$key] .= '<option'.($option == $col ? ' selected="selected"' : '').'>'.$option.'</option>';
-		        					}
-		        					
-		        					$row[$key] .=  '</select>';
-		        					
-		        				break;
-		        				
-		        				case 'label':		$row[$key] = '<label>'.$col.'</label>'; break;
-		        				case 'text': 		$row[$key] = '<input type="text" value="'.$col.'" />'; break;
-		        				case 'password': 	$row[$key] = '<input type="password" value="'.$col.'" />'; break;
-		        				case 'textarea': 	$row[$key] = '<textarea>'.$col.'</textarea>'; break;
-		        				default: 			$row[$key] = $col; break;
-		        			}
-		        		}
+						foreach($section['rows'] as &$row)
+						{
+			        		foreach($row as $key => $value)
+			        		{
+			        			$col = $row[$key]; 
+			        			$opts =& $section['fields'][$key];
+			        			
+			        			if($opts['type'] == 'pk')
+			        			{
+			        				// Primary key name defaults to actions.
+			        				if(!isset($opts['name'])) $opts['name'] = 'Actions';
+			        				
+			        				$row[$key] = '';
+			        				
+			        				// Generate links from primary key type.
+			        				if($section['updateable']) $row[$key] .= '<a href="'.site_url('admin/update/' . $section['table'] . '/' . $col).'">Update</a>';
+			        				if($section['deletable'])  $row[$key] .= '<a href="'.site_url('admin/delete/' . $section['table'] . '/' . $col).'">Delete</a>';
+			        			}
+			        			
+			        			if($opts['type'] == 'password')
+			        			{
+			        				$row[$key] = '&bull;&bull;&bull;&bull;&bull;';
+			        			}
+			        			
+			        			// Nice name doesn't exist, use column name.
+			        			if(!isset($opts['name'])) $opts['name'] = $key;
+			        			
+			        			/*switch($display['type'])
+			        			{
+			        				case 'select': 
+			        					
+			        					$row[$key] =  '<select name="'.$section['table'].'[]">';
+			        					
+			        					foreach($display['options'] as $option)
+			        					{
+			        						$row[$key] .= '<option'.($option == $col ? ' selected="selected"' : '').'>'.$option.'</option>';
+			        					}
+			        					
+			        					$row[$key] .=  '</select>';
+			        					
+			        				break;
+			        				
+			        				case 'pk':			$row[$key] = '<a href="'.site_url('admin/update/' . $section['table'] . '/' . $col).'">Update</a>'; break;
+			        				case 'label':		$row[$key] = '<label>'.$col.'</label>'; break;
+			        				case 'text': 		$row[$key] = '<input name="'.$section['table'].'[]" type="text" value="'.$col.'" />'; break;
+			        				case 'password': 	$row[$key] = '<input name="'.$section['table'].'[]" type="password" value="'.$col.'" />'; break;
+			        				case 'textarea': 	$row[$key] = '<textarea>'.$col.'</textarea>'; break;
+			        				default: 			$row[$key] = $col; break;
+			        			}*/
+			        		}
+						}
 					}
 				}
 			}
-			
+			//print_q($sections);
 			return $sections;
 		}
 	}

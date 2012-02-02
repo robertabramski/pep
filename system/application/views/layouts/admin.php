@@ -13,21 +13,22 @@
 	        <h2><?php echo $lang['welcome']; ?> <?php echo $user; ?></h2>
 	        
 	        <?php if($sections): foreach($sections as $section): if($section['rows']): ?>
-	        <h3><?php echo $section['menu']; ?></h3>
-	        <table>
-		        <thead>
-		        	<?php foreach(array_keys($section['fields']) as $field): ?>
-		        	<td><?php echo $field; ?></td>
+		        <h3><?php echo $section['menu']; ?></h3>
+		        <table>
+			        <thead>
+			        	<?php foreach($section['fields'] as $field): ?>
+			        	<td><?php echo $field['name']; ?></td>
+			        	<?php endforeach; ?>
+			        </thead>
+		        	<?php foreach($section['rows'] as $row): ?>
+		        	<tr>
+		        	<?php foreach($row as $key => $value): ?>
+		        		<td><?php echo $value; ?></td>
 		        	<?php endforeach; ?>
-		        </thead>
-	        	<?php foreach($section['rows'] as $row): ?>
-	        	<tr>
-	        	<?php foreach($row as $key => $value): ?>
-	        		<td><?php echo $row[$key]; ?></td>
-	        	<?php endforeach; ?>
-	        	</tr>
-	       		<?php endforeach; ?>
-	        </table>	        
+		        	</tr>
+		       		<?php endforeach; ?>
+		        </table>
+		    </form>       
 	        <?php endif; endforeach; endif; ?>
 	        
 	    </div>

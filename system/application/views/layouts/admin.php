@@ -13,7 +13,9 @@
 	        <h2><?php echo $lang['welcome']; ?> <?php echo $user; ?></h2>
 	        
 	        <?php if($sections): foreach($sections as $section): if($section['rows']): ?>
-		        <h3><?php echo $section['menu']; ?></h3>
+		        <h3><?php echo $section['menu']; ?>
+		        	<a href="<?php echo site_url('admin/create/'.$section['table']); ?>">Create</a>
+		        </h3>
 		        <table>
 			        <thead>
 			        	<?php foreach($section['fields'] as $field): ?>

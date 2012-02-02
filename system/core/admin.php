@@ -180,7 +180,7 @@
 					}
 				}
 				
-				// Loop sections to post process.
+				// Post process sections array.
 				foreach($sections as &$section)
 				{
 					if($section['rows'])
@@ -206,6 +206,7 @@
 			        			
 			        			if($opts['type'] == 'password')
 			        			{
+			        				// Show password as bullets instead of hash. 
 			        				$row[$key] = '&bull;&bull;&bull;&bull;&bull;';
 			        			}
 			        			

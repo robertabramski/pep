@@ -8,7 +8,6 @@
 	</head>
 	<body>
 	    <div id="content">
-	    
 	    	<a href="<?php echo site_url('admin/logout'); ?>">Logout</a>
 	        <h1><?php echo $title; ?></h1>
 	        <h2><?php echo $lang['welcome']; ?> <?php echo $user; ?></h2>
@@ -23,8 +22,8 @@
 		        </thead>
 	        	<?php foreach($section['rows'] as $row): ?>
 	        	<tr>
-	        	<?php foreach($row as $r): ?>
-	        		<td><?php echo $r; ?></td>
+	        	<?php foreach($row as $key => $value): ?>
+	        		<td><?php echo $row[$key]; ?></td>
 	        	<?php endforeach; ?>
 	        	</tr>
 	       		<?php endforeach; ?>

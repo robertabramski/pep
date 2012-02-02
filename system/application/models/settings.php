@@ -4,17 +4,13 @@
 	{
 		public function __construct()
 		{
-			$this->menu = 'Settings';
-			$this->table = 'settings';
-			$this->allow = array('admin', 'user');
+			parent::__construct();
 			
 			$this->fields = array
 			(
 				'name' 	=> array('type' => 'label'),
 				'value' => array('type' => 'text')
 			);
-			
-			parent::__construct();
 		}
 		
 		public function get_setting($name)

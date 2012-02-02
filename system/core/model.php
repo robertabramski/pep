@@ -38,6 +38,13 @@
 					if($this->db) $this->type = 'SQLite3';
 				break; 
 			}
+			
+			// Set names intuitively from class name.
+			$this->table = strtolower(get_class($this));
+			$this->menu = ucfirst(strtolower(get_class($this)));
+			
+			// By default, only admins can see everything.
+			$this->allow = array('admin');
 		}
 		
 		/**
@@ -264,7 +271,7 @@
 				switch($this->type)
 				{
 					case "PDO": 	return $this->db->lastInsertId(); 
-					case "SQLite3": return $this->db->lastInsertRowID(); 
+					case "SQLite3": return $this->db->lastInsertRowID();
 				}
 			}
 			else if(stripos($query, 'UPDATE') === 0 || stripos($query, 'DELETE') === 0)

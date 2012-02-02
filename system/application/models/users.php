@@ -4,9 +4,7 @@
 	{
 		public function __construct()
 		{
-			$this->menu = 'Users';
-			$this->table = 'users';
-			$this->allow = array('admin');
+			parent::__construct();
 			
 			$this->fields = array
 			(
@@ -14,8 +12,6 @@
 				'pass' => array('type' => 'password'),
 				'role' => array('type' => 'select', 'options' => array('user', 'admin'))
 			);
-			
-			parent::__construct();
 		}
 		
 		public function get_user($id)

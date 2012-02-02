@@ -33,46 +33,6 @@
 			}
 		}
 		
-		private function get_admin_sections()
-		{
-			// Scan model directory.
-			$files = scandir(APP_DIR . 'models/');
-			
-			if($files)
-			{
-				foreach($files as $file)
-				{
-					if($file != '..' && $file != '.')
-					{
-						// Load the model to get info set.
-						require_once(APP_DIR . 'models/' . $file);
-						$name = $this->string->remove_ext($file);
-						$model = new $name;
-						
-						// No rows yet.
-						$rows = null;
-						
-						// Check role to see if user can see this.
-						if(in_array($this->auth->authed_user('role'), $model->allow))
-						{
-							$model->from($model->table);
-							$rows = $model->select(array_keys($model->fields));
-						}
-						
-						$sections[] = array
-						(
-							'menu' 		=> $model->menu,
-							'table'		=> $model->table,
-							'fields' 	=> $model->fields,
-							'rows'		=> $rows
-						);
-					}
-				}
-			}
-			
-			return $sections;
-		}
-		
 		public function login($action = '')
 		{
 			// If segment is login submission.
@@ -157,6 +117,88 @@
 		{
 			$this->auth->logout();
 			redirect('admin/login');
+		}
+		
+		private function get_admin_sections()
+		{
+			// Scan model directory.
+			$files = scandir(APP_DIR . 'models/');
+			
+			if($files)
+			{
+				// Build sections to display.
+				foreach($files as $file)
+				{
+					if($file != '..' && $file != '.')
+					{
+						// Load each model.
+						require_once(APP_DIR . 'models/' . $file);
+						$name = $this->string->remove_ext($file);
+						$model = new $name;
+						
+						// No rows yet.
+						$rows = null;
+						
+						// Check role to see if user can see this.
+						if(in_array($this->auth->authed_user('role'), $model->allow))
+						{
+							if(!$model->fields) 
+							{
+								// Fields must be set so user can see it.
+								Pep::show_error(sprintf('The fields array in the model %s must be set show up in the admin.', $file));
+							}
+							
+							// Select what to show.
+							$model->from($model->table);
+							$rows = $model->select(array_keys($model->fields));
+						}
+						
+						$sections[] = array
+						(
+							'menu' 		=> $model->menu,
+							'fields' 	=> $model->fields,
+							'rows'		=> $rows
+						);
+					}
+				}
+				
+				// Loop sections and add markup as defined by fields array.
+				foreach($sections as &$section)
+				{
+					foreach($section['rows'] as &$row)
+					{
+		        		foreach($row as $key => $value)
+		        		{
+		        			$col = $row[$key]; 
+		        			$display = $section['fields'][$key];
+		        			
+		        			switch($display['type'])
+		        			{
+		        				case 'select': 
+		        					
+		        					$row[$key] =  '<select>';
+		        					
+		        					foreach($display['options'] as $option)
+		        					{
+		        						$row[$key] .= '<option'.($option == $col ? ' selected="selected"' : '').'>'.$option.'</option>';
+		        					}
+		        					
+		        					$row[$key] .=  '</select>';
+		        					
+		        				break;
+		        				
+		        				case 'label':		$row[$key] = '<label>'.$col.'</label>'; break;
+		        				case 'text': 		$row[$key] = '<input type="text" value="'.$col.'" />'; break;
+		        				case 'password': 	$row[$key] = '<input type="password" value="'.$col.'" />'; break;
+		        				case 'textarea': 	$row[$key] = '<textarea>'.$col.'</textarea>'; break;
+		        				default: 			$row[$key] = $col; break;
+		        			}
+		        		}
+					}
+				}
+			}
+			
+			return $sections;
 		}
 	}
 	

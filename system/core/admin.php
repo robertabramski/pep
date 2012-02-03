@@ -40,7 +40,98 @@
 		{
 			if(empty($name)) show_error();
 			
-			$model = $this->load->model($name);
+			if($this->input->has_post())
+			{
+				$model = $this->load->model($name);
+				$fields = $model->fields;
+				
+				$post = $this->input->post();
+				
+				foreach($fields as $key => $value)
+				{
+					$opts =& $fields[$key];
+					
+					if($opts['type'] == 'password')
+					{
+						// Hash passwords sent.
+						if(!empty($post[$key])) $post[$key] = md5($post[$key]);
+					}
+					
+					// Remove empty fields.
+					if(empty($post[$key])) unset($post[$key]);
+				}
+				
+				// Set session data for success or failure.
+				if($model->insert($post))
+				{
+					$this->session->set('result', sprintf('The %s insert was successful.', $model->table));
+				}
+				else
+				{
+					$this->session->set('result', sprintf('The %s insert has failed.', $model->table));			
+				}
+				
+				redirect('admin');
+			}
+			else
+			{
+				$model = $this->load->model($name);
+				$fields = $model->fields;
+				
+				// Add markup for create view.
+				foreach($fields as $key => $value)
+				{
+					$opts =& $fields[$key];
+					
+					if(empty($opts['type']))
+			        {
+			        	$row[$key] = '<input name="'.$key.'" type="text" />'; 
+			        }
+					
+					switch($opts['type'])
+			        {
+			        	case 'select':
+			        		 
+			        		$options = '';
+			        		
+			        		foreach($opts['options'] as $option) 
+			        		{
+			        			$options .= '<option>'.$option.'</option>';
+			        		}
+			        		
+			        		$row[$key] = '<select name="'.$key.'">'.$options.'</select>';
+			        		
+			        	break;
+			        	
+			        	case 'label':		$row[$key] = '<input name="'.$key.'" type="text" />'; break;
+			        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" />'; break;
+			        	case 'password':	$row[$key] = '<input name="'.$key.'" type="password" />'; break;
+			        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'"></textarea>'; break;
+			        	case 'none':	 	$row[$key] = '<input name="'.$key.'" type="text" />'; break;
+			        	default:		 	$row[$key] = '<input name="'.$key.'" type="text" />'; break;
+			        }
+			        
+			        // Nice name doesn't exist, use column name.
+			        if(!isset($opts['name'])) $opts['name'] = $key;
+			        
+					if($opts['type'] == 'pk')
+					{
+				        // Get bottom row to show insert id. 
+				        $row[$key] = $model->bottom_row($key) + 1;
+					}
+				}
+				
+				$data = array
+				(
+					'title' 	=> 'Admin',
+					'message' 	=> 'Create '. $model->menu,
+					'fields'	=> $fields,
+					'row'		=> $row
+				);
+				
+				$template = $this->load->view('create');
+				$template->render($data);
+			}
 		}
 		
 		public function update($name = '', $id = '')
@@ -99,17 +190,16 @@
 					{
 						// Get primary key name for query.
 						$pk = $key;
-						
-						// Primary key name defaults to key.
-				        if(!isset($opts['name'])) $opts['name'] = 'Key';
 					}
+					
+					// Nice name doesn't exist, use column name.
+			        if(!isset($opts['name'])) $opts['name'] = $key;
 				}
 				
 				// Select item to update.
 				$model->from($model->table);
 				$rows = $model->select(array_keys($model->fields), array($pk => $id), 1);
 				$row = $rows[0];
-				
 				
 				// Add markup for update view.
 				foreach($fields as $key => $value)
@@ -132,7 +222,7 @@
 			        	
 			        	case 'label':		$row[$key] = '<label>'.$row[$key].'</label>'; break;
 			        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" value="'.$row[$key].'" />'; break;
-			        	case 'password':	$row[$key]  = '<input name="'.$key.'" type="password" />'; break;
+			        	case 'password':	$row[$key] = '<input name="'.$key.'" type="password" />'; break;
 			        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'">'.$row[$key].'</textarea>'; break;
 			        	case 'none':	 	$row[$key] = $row[$key]; break;
 			        }
@@ -302,9 +392,6 @@
 			        			
 			        			if($opts['type'] == 'pk')
 			        			{
-			        				// Primary key name defaults to key.
-			        				if(!isset($opts['name'])) $opts['name'] = 'Key';
-			        				
 			        				// Add action links from primary key.
 			        				if($section['updateable']) $row['Actions'] .= '<a href="'.site_url('admin/update/' . $section['table'] . '/' . $col).'">Update</a>';
 			        				

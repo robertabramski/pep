@@ -82,6 +82,38 @@
 		}
 		
 		/**
+		 * Returns the last row id after a SELECT query has run.
+		 * 
+		 * @access	public
+		 * @return	int
+		 * 
+		 */
+		public function last_id()
+		{
+			switch($this->type)
+			{
+				case 'PDO': 	return $this->db->lastInsertId(); 
+				case 'SQLite3': return $this->db->lastInsertRowID(); 
+			}
+		}
+		
+		/**
+		 * Returns the bottom row id without a SELECT query running before it.
+		 * 
+		 * @access 	public
+		 * @param 	string 		$id_name	The name of the row id.
+		 * @param 	string 		$table		The table selected.
+		 * @return	int
+		 * 
+		 */
+		public function bottom_row($id_name, $table = null)
+		{
+			$query = sprintf('SELECT %s FROM %s ORDER BY ROWID DESC LIMIT 1', $id_name, ($table ? $table : $this->table));
+			$result = $this->smart_query($query);
+			return $result[0][$id_name]; 
+		}
+		
+		/**
 		 * Selects the active table to run queries to.
 		 *   
 		 * @access	public

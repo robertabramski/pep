@@ -9,8 +9,8 @@
 			$this->deletable = false;
 			$this->fields = array
 			(
-				'setting_id'	=> array('type' => 'pk'),
-				'name' 			=> array('name' => 'Name'),
+				'setting_id'	=> array('type' => 'pk', 'name' => 'Key'),
+				'name' 			=> array('type' => 'none', 'name' => 'Name'),
 				'value' 		=> array('type' => 'text', 'name' => 'Value')
 			);
 		}

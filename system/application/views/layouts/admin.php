@@ -15,11 +15,12 @@
 	        <h1><?php echo $title; ?></h1>
 	        <h2><?php echo $lang['welcome']; ?> <?php echo $user; ?></h2>
 	        
-	        <?php if($sections): foreach($sections as $section): if($section['rows']): ?>
+	        <?php if($sections): foreach($sections as $section): ?>
 	        <h3>
 	        	<?php echo $section['menu']; ?>
 	        	<a href="<?php echo site_url('admin/create/'.$section['table']); ?>">Create</a>
 	        </h3>
+	        <?php if($section['rows']): ?>
 	        <table>
 				<thead>
 		        	<?php foreach($section['fields'] as $field): ?>
@@ -34,7 +35,8 @@
 	        	</tr>
 	       		<?php endforeach; ?>
 	        </table>   
-	        <?php endif; endforeach; endif; ?>
+	        <?php endif; ?>
+	        <?php endforeach; endif; ?>
 	        
 	    </div>
 	</body>

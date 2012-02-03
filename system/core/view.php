@@ -88,9 +88,9 @@
 			
 			if(!empty($language))
 			{
-				$file = APP_DIR . 'languages/' .strtolower($language). '.php';
+				$file = APP_DIR . 'languages/' . strtolower($language) . '.php';
 				
-				if(file_exists($file)) require_once($file);
+				if(file_exists($file)) include($file);
 				else Pep::show_error(sprintf('The language file %s.php does not exist.', $language));
 			}
 			

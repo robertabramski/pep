@@ -10,6 +10,9 @@
 			$this->session = $this->load->helper('session');
 			$this->validate = $this->load->helper('validate');
 			$this->string = $this->load->helper('string');
+			
+			// Load language. 
+			$this->lang = $this->load->lang(Pep::get_setting('language'));
 		} 
 		
 		public function index()
@@ -68,7 +71,7 @@
 				}
 				else
 				{
-					$this->session->set('result', sprintf('The %s insert has failed.', $model->table));			
+					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $model->table));			
 				}
 				
 				redirect('admin');
@@ -107,6 +110,7 @@
 			        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" />'; break;
 			        	case 'password':	$row[$key] = '<input name="'.$key.'" type="password" />'; break;
 			        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'"></textarea>'; break;
+			        	case 'checkbox': 	$row[$key] = '<input name="'.$key.'" type="checkbox"'.($row[$key] == 'on' ? ' checked="checked"' : '').' />'; break;
 			        	case 'none':	 	$row[$key] = '<input name="'.$key.'" type="text" />'; break;
 			        	default:		 	$row[$key] = '<input name="'.$key.'" type="text" />'; break;
 			        }
@@ -159,6 +163,11 @@
 					{
 						// Hash passwords sent.
 						if(!empty($post[$key])) $post[$key] = md5($post[$key]);
+					}
+					
+					if($opts['type'] == 'checkbox')
+					{
+						$post[$key] = ($post[$key] == 'on' ? 'on' : 'off'); 
 					}
 					
 					// Remove empty fields.
@@ -224,6 +233,7 @@
 			        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" value="'.$row[$key].'" />'; break;
 			        	case 'password':	$row[$key] = '<input name="'.$key.'" type="password" />'; break;
 			        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'">'.$row[$key].'</textarea>'; break;
+			        	case 'checkbox': 	$row[$key] = '<input name="'.$key.'" type="checkbox"'.($row[$key] == 'on' ? ' checked="checked"' : '').' />'; break;
 			        	case 'none':	 	$row[$key] = $row[$key]; break;
 			        }
 				}

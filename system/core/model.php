@@ -138,6 +138,8 @@
 		 */
 		public function select($data, $where = null, $limit = null, $offset = null, $table = null)
 		{
+			if(empty($data)) return false;
+			
 			if(!is_array($data)) $data = array($data);
 			if($where) $dests = $this->handle_where_clause($where);
 			
@@ -159,6 +161,8 @@
 		 */
 		public function insert($data, $table = null)
 		{
+			if(empty($data)) return false;
+			
 			foreach($data as $key => $val)
 			{
 				$f[] = $key;
@@ -183,6 +187,8 @@
 		 */
 		public function update($data, $where = null, $table = null)
 		{
+			if(empty($data)) return false;
+			
 			if(!is_array($data))
 			{
 				$sets = array($data);

@@ -18,8 +18,9 @@
 	        <?php if($sections): foreach($sections as $section): if($section['allowed']): ?>
 	        <h3>
 	        	<?php echo $section['menu']; ?>
-	        	<?php //TODO: Make it possible for it to be uncreatable. ?>
+	        	<?php if($section['creatable']): ?>
 	        	<a href="<?php echo site_url('admin/create/'.$section['table']); ?>">Create</a>
+	        	<?php endif; ?>
 	        </h3>
 	        <?php if($section['rows']): ?>
 	        <table>

@@ -17,6 +17,7 @@
 		public $table;
 		public $allow = array('admin');
 		public $fields;
+		public $creatable = true;
 		public $updateable = true;
 		public $deletable = true;
 		

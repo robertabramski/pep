@@ -6,6 +6,8 @@
 		{
 			parent::__construct();
 			
+			$this->creatable = false;
+			$this->updateable = true;
 			$this->deletable = false;
 			$this->fields = array
 			(

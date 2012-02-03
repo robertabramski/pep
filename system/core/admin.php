@@ -388,6 +388,7 @@
 							'menu' 			=> $model->menu,
 							'table'			=> $model->table,
 							'fields' 		=> $model->fields,
+							'creatable' 	=> $model->creatable,
 							'updateable' 	=> $model->updateable,
 							'deletable' 	=> $model->deletable
 						);

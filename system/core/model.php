@@ -166,8 +166,13 @@
 			
 			foreach($data as $key => $val)
 			{
+				if($val == 0) $val = ' 0';
+				else if(is_string($val)) $val = ' '.$this->escape($val);
+				else if(is_null($val) || empty($val)) $val = ' NULL';
+				else $val = ' '.$val;
+				
 				$f[] = $key;
-				$v[] = (is_null($val) || empty($val)) ? 'NULL' : (is_string($val) ? $this->escape($val) : $val);
+				$v[] = $val;
 			}
 			
 			$fields = implode(', ', $f);
@@ -201,7 +206,8 @@
 					if($val !== '')
 					{
 						$key = $key.' =';
-						if(is_string($val)) $val = ' '.$this->escape($val);
+						if($val == 0) $val = ' 0';
+						else if(is_string($val)) $val = ' '.$this->escape($val);
 						else if(is_null($val) || empty($val)) $val = ' NULL';
 						else $val = ' '.$val;
 					}

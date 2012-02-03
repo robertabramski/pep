@@ -15,9 +15,10 @@
 	        <h1><?php echo $title; ?></h1>
 	        <h2><?php echo $lang['welcome']; ?> <?php echo $user; ?></h2>
 	        
-	        <?php if($sections): foreach($sections as $section): ?>
+	        <?php if($sections): foreach($sections as $section): if($section['allowed']): ?>
 	        <h3>
 	        	<?php echo $section['menu']; ?>
+	        	<?php //TODO: Make it possible for it to be uncreatable. ?>
 	        	<a href="<?php echo site_url('admin/create/'.$section['table']); ?>">Create</a>
 	        </h3>
 	        <?php if($section['rows']): ?>
@@ -36,7 +37,7 @@
 	       		<?php endforeach; ?>
 	        </table>   
 	        <?php endif; ?>
-	        <?php endforeach; endif; ?>
+	        <?php endif; endforeach; endif; ?>
 	        
 	    </div>
 	</body>

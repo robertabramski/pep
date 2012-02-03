@@ -45,23 +45,29 @@
 			
 			if($this->input->has_post())
 			{
+				$post = $this->input->post();
+				
 				$model = $this->load->model($name);
 				$fields = $model->fields;
-				
-				$post = $this->input->post();
 				
 				foreach($fields as $key => $value)
 				{
 					$opts =& $fields[$key];
+					
+					// Set blanks to null.
+					if($opts['type'] != 'none')
+					{
+						if(empty($post[$key])) $post[$key] = null;
+					}
+					
+					// Let primary key auto increment.
+					if($opts['type'] == 'pk') unset($post[$key]);
 					
 					if($opts['type'] == 'password')
 					{
 						// Hash passwords sent.
 						if(!empty($post[$key])) $post[$key] = md5($post[$key]);
 					}
-					
-					// Remove empty fields.
-					if(empty($post[$key])) unset($post[$key]);
 				}
 				
 				// Set session data for success or failure.
@@ -94,23 +100,20 @@
 					switch($opts['type'])
 			        {
 			        	case 'select':
-			        		 
-			        		$options = '';
-			        		
-			        		foreach($opts['options'] as $option) 
-			        		{
-			        			$options .= '<option>'.$option.'</option>';
-			        		}
-			        		
+			        		$options = ''; $selected = $row[$key];
+			        		foreach($opts['options'] as $option) $options .= '<option'.($selected == $option ? ' selected="selected"' : '').'>'.$option.'</option>'; 
 			        		$row[$key] = '<select name="'.$key.'">'.$options.'</select>';
-			        		
 			        	break;
 			        	
-			        	case 'label':		$row[$key] = '<input name="'.$key.'" type="text" />'; break;
+			        	case 'checkbox':
+			        		$checked = $row[$key];
+			        		$row[$key]  = '<input name="'.$key.'" type="checkbox"'.($checked == 'on' ? ' checked="checked"' : '').' />';
+			        		$row[$key] .= '<input name="'.$key.'" type="hidden" value="'.($checked == 'on' ? 'on' : 'off').'" />';
+			        	break;
+			        	
 			        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" />'; break;
 			        	case 'password':	$row[$key] = '<input name="'.$key.'" type="password" />'; break;
 			        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'"></textarea>'; break;
-			        	case 'checkbox': 	$row[$key] = '<input name="'.$key.'" type="checkbox"'.($row[$key] == 'on' ? ' checked="checked"' : '').' />'; break;
 			        	case 'none':	 	$row[$key] = '<input name="'.$key.'" type="text" />'; break;
 			        	default:		 	$row[$key] = '<input name="'.$key.'" type="text" />'; break;
 			        }
@@ -144,6 +147,8 @@
 			
 			if($this->input->has_post())
 			{
+				$post = $this->input->post();
+				//print_q($post);
 				$model = $this->load->model($name);
 				$fields = $model->fields;
 				
@@ -153,25 +158,29 @@
 					if($fields[$key]['type'] == 'pk') $pk = $key;
 				}
 				
-				$post = $this->input->post();
-				
 				foreach($fields as $key => $value)
 				{
 					$opts =& $fields[$key];
 					
+					// Set blanks to null.
+					if($opts['type'] != 'none')
+					{
+						if(empty($post[$key])) $post[$key] = null;
+					}
+					
+					// Remove primary key, it exists already.
+					if($opts['type'] == 'pk') unset($post[$key]);
+					
 					if($opts['type'] == 'password')
 					{
-						// Hash passwords sent.
-						if(!empty($post[$key])) $post[$key] = md5($post[$key]);
+						if(empty($post[$key])) unset($post[$key]);
+						else $post[$key] = md5($post[$key]);
 					}
 					
 					if($opts['type'] == 'checkbox')
 					{
 						$post[$key] = ($post[$key] == 'on' ? 'on' : 'off'); 
 					}
-					
-					// Remove empty fields.
-					if(empty($post[$key])) unset($post[$key]);
 				}
 				
 				// Set session data for success or failure.
@@ -216,24 +225,19 @@
 					switch($fields[$key]['type'])
 			        {
 			        	case 'select':
-			        		 
-			        		$options = '';
-			        		
-			        		foreach($fields[$key]['options'] as $option) 
-			        		{
-			        			$selected = ($option == $row[$key] ? ' selected="selected"' : '');
-			        			$options .= '<option'.$selected.'>'.$option.'</option>';
-			        		}
-			        		
+			        		$options = ''; $selected = $row[$key];
+			        		foreach($opts['options'] as $option) $options .= '<option'.($selected == $option ? ' selected="selected"' : '').'>'.$option.'</option>'; 
 			        		$row[$key] = '<select name="'.$key.'">'.$options.'</select>';
-			        		
 			        	break;
 			        	
-			        	case 'label':		$row[$key] = '<label>'.$row[$key].'</label>'; break;
+			        	case 'checkbox':
+			        		$checked = $row[$key];
+			        		$row[$key]  = '<input name="'.$key.'" type="checkbox"'.($checked == 'on' ? ' checked="checked"' : '').' />';
+			        	break;
+			        	
 			        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" value="'.$row[$key].'" />'; break;
 			        	case 'password':	$row[$key] = '<input name="'.$key.'" type="password" />'; break;
 			        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'">'.$row[$key].'</textarea>'; break;
-			        	case 'checkbox': 	$row[$key] = '<input name="'.$key.'" type="checkbox"'.($row[$key] == 'on' ? ' checked="checked"' : '').' />'; break;
 			        	case 'none':	 	$row[$key] = $row[$key]; break;
 			        }
 				}
@@ -358,16 +362,17 @@
 						$name = $this->string->remove_ext($file);
 						$model = $this->load->model($name);
 						
-						// No rows yet.
 						$rows = null;
 						
 						// Check role to see if user can see this.
-						if(in_array($this->auth->authed_user('role'), $model->allow))
+						$allowed = in_array($this->auth->authed_user('role'), $model->allow);
+						
+						if($allowed)
 						{
 							if(!$model->fields) 
 							{
 								// Fields must be set so user can see it.
-								Pep::show_error(sprintf('The fields array in the model %s must be set show up in the admin.', $file));
+								Pep::show_error(sprintf('The fields array in the model %s must be set to show up in the admin.', $file));
 							}
 							
 							// Select what to show.
@@ -379,6 +384,7 @@
 						$sections[] = array
 						(
 							'rows'			=> $rows,
+							'allowed'		=> $allowed,
 							'menu' 			=> $model->menu,
 							'table'			=> $model->table,
 							'fields' 		=> $model->fields,

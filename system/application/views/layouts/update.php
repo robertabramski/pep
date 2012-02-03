@@ -25,7 +25,7 @@
 			        <?php endforeach; ?>
 		        	</tr>
 		        </table>
-		        <input type="submit" />
+		        <input type="submit" value="Submit" />
 		   </form>
 	    </div>
 	</body>

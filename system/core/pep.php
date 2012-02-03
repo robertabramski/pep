@@ -38,6 +38,7 @@
 			
 			if(!empty($session_name))
 			{
+				//TODO: Make this refresh periodically.
 				session_name($session_name);
 				session_start();
 			}

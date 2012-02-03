@@ -28,7 +28,7 @@
 				$template = $this->load->view('admin');
 				$template->render($data);
 				
-				$this->session->destroy('result');
+				$this->session->delete('result');
 			}
 			else
 			{
@@ -229,9 +229,9 @@
 					$template->render($data);
 					
 					// Session data no longer needed.
-					$this->session->destroy('user');
-					$this->session->destroy('failed');
-					$this->session->destroy('errors');
+					$this->session->delete('user');
+					$this->session->delete('failed');
+					$this->session->delete('errors');
 				}
 			}
 		}

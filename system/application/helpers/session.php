@@ -19,12 +19,12 @@
 			return isset($_SESSION[$name]) ? $_SESSION[$name] : false;
 		}
 		
-		public function destroy($name)
+		public function delete($name)
 		{
 			unset($_SESSION[$name]);
 		}
 		
-		public function destroy_all()
+		public function destroy()
 		{
 			if(isset($_SESSION))
 			{

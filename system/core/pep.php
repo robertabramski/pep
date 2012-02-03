@@ -158,6 +158,13 @@
 			return rtrim(self::get_setting('base_url'), '/') . '/' . $loc;
 		}
 		
+		/**
+		 * Returns the current url.
+		 * 
+		 * @access	public
+		 * @return	string
+		 * 
+		 */
 		public static function current_url()
 		{
 			return $_SERVER['REQUEST_URI'];

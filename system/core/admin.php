@@ -21,11 +21,14 @@
 					'title' 	=> 'Admin',
 					'message' 	=> 'Welcome to admin.',
 					'sections'	=> $this->get_admin_sections(),
-					'user'		=> $this->auth->authed_user('user')
+					'user'		=> $this->auth->authed_user('user'),
+					'result'	=> $this->session->get('result')
 				);
 				
 				$template = $this->load->view('admin');
 				$template->render($data);
+				
+				$this->session->destroy('result');
 			}
 			else
 			{
@@ -33,8 +36,10 @@
 			}
 		}
 		
-		public function create($name)
+		public function create($name = '')
 		{
+			if(empty($name)) show_error();
+			
 			$model = $this->load->model($name);
 		}
 		
@@ -42,68 +47,111 @@
 		{
 			if(empty($name) || empty($id)) show_error();
 			
-			$model = $this->load->model($name);
-			$fields = $model->fields;
-			
-			foreach($fields as $key => $value)
+			if($this->input->has_post())
 			{
-				$opts =& $fields[$key];
+				$model = $this->load->model($name);
+				$fields = $model->fields;
 				
-				if($opts['type'] == 'pk')
+				foreach($fields as $key => $value)
 				{
 					// Get primary key name for query.
-					$pk = $key;
-					
-					// Primary key name defaults to Id.
-			        if(!isset($opts['name'])) $opts['name'] = 'Id';
+					if($fields[$key]['type'] == 'pk') $pk = $key;
 				}
+				
+				$post = $this->input->post();
+				
+				foreach($fields as $key => $value)
+				{
+					$opts =& $fields[$key];
+					
+					if($opts['type'] == 'password')
+					{
+						// Hash passwords sent.
+						if(!empty($post[$key])) $post[$key] = md5($post[$key]);
+					}
+					
+					// Remove empty fields.
+					if(empty($post[$key])) unset($post[$key]);
+				}
+				
+				// Set session data for success or failure.
+				if($model->update($post, array($pk => $id)) > 0)
+				{
+					$this->session->set('result', sprintf('The %s update was successful.', $model->table));
+				}
+				else
+				{
+					$this->session->set('result', sprintf('The %s update has failed.', $model->table));			
+				}
+				
+				redirect('admin');
 			}
-			
-			// Select item to update.
-			$model->from($model->table);
-			$rows = $model->select(array_keys($model->fields), array($pk => $id), 1);
-			$row = $rows[0];
-			
-			foreach($fields as $key => $value)
+			else
 			{
-				switch($fields[$key]['type'])
-		        {
-		        	case 'select':
-		        		 
-		        		$options = '';
-		        		
-		        		foreach($fields[$key]['options'] as $option) 
-		        		{
-		        			$selected = ($option == $row[$key] ? ' selected="selected"' : '');
-		        			$options .= '<option'.$selected.'>'.$option.'</option>';
-		        		}
-		        		
-		        		$row[$key] = '<select name="'.$key.'">'.$options.'</select>';
-		        		
-		        	break;
-		        	
-		        	//case 'pk':			unset($row[$key]); break;
-		        	case 'label':		$row[$key] = '<label>'.$row[$key].'</label>'; break;
-		        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" value="'.$row[$key].'" />'; break;
-		        	case 'password':	$row[$key]  = '<input name="'.$key.'" type="password" />'; break;
-		        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'">'.$row[$key].'</textarea>'; break;
-		        	case 'none':	 	$row[$key] = $row[$key]; break;
-		        }
+				$model = $this->load->model($name);
+				$fields = $model->fields;
+				
+				foreach($fields as $key => $value)
+				{
+					$opts =& $fields[$key];
+					
+					if($opts['type'] == 'pk')
+					{
+						// Get primary key name for query.
+						$pk = $key;
+						
+						// Primary key name defaults to key.
+				        if(!isset($opts['name'])) $opts['name'] = 'Key';
+					}
+				}
+				
+				// Select item to update.
+				$model->from($model->table);
+				$rows = $model->select(array_keys($model->fields), array($pk => $id), 1);
+				$row = $rows[0];
+				
+				
+				// Add markup for update view.
+				foreach($fields as $key => $value)
+				{
+					switch($fields[$key]['type'])
+			        {
+			        	case 'select':
+			        		 
+			        		$options = '';
+			        		
+			        		foreach($fields[$key]['options'] as $option) 
+			        		{
+			        			$selected = ($option == $row[$key] ? ' selected="selected"' : '');
+			        			$options .= '<option'.$selected.'>'.$option.'</option>';
+			        		}
+			        		
+			        		$row[$key] = '<select name="'.$key.'">'.$options.'</select>';
+			        		
+			        	break;
+			        	
+			        	case 'label':		$row[$key] = '<label>'.$row[$key].'</label>'; break;
+			        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" value="'.$row[$key].'" />'; break;
+			        	case 'password':	$row[$key]  = '<input name="'.$key.'" type="password" />'; break;
+			        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'">'.$row[$key].'</textarea>'; break;
+			        	case 'none':	 	$row[$key] = $row[$key]; break;
+			        }
+				}
+				
+				$data = array
+				(
+					'title' 	=> 'Admin',
+					'message' 	=> 'Update '. $model->menu,
+					'fields'	=> $fields,
+					'row'		=> $row
+				);
+				
+				$template = $this->load->view('update');
+				$template->render($data);
 			}
-			
-			$data = array
-			(
-				'title' 	=> 'Admin',
-				'message' 	=> 'Update '. $model->menu,
-				'fields'	=> $fields,
-				'row'		=> $row
-			);
-			
-			$template = $this->load->view('update');
-			$template->render($data);
 		}
 		
-		public function delete($name, $id)
+		public function delete($name = '', $id = '')
 		{
 			$model = $this->load->model($name);
 		}
@@ -254,14 +302,17 @@
 			        			
 			        			if($opts['type'] == 'pk')
 			        			{
-			        				// Primary key name defaults to actions.
-			        				if(!isset($opts['name'])) $opts['name'] = 'Actions';
+			        				// Primary key name defaults to key.
+			        				if(!isset($opts['name'])) $opts['name'] = 'Key';
 			        				
-			        				$row[$key] = '';
+			        				// Add action links from primary key.
+			        				if($section['updateable']) $row['Actions'] .= '<a href="'.site_url('admin/update/' . $section['table'] . '/' . $col).'">Update</a>';
 			        				
-			        				// Generate links from primary key type.
-			        				if($section['updateable']) $row[$key] .= '<a href="'.site_url('admin/update/' . $section['table'] . '/' . $col).'">Update</a>';
-			        				if($section['deletable'])  $row[$key] .= '<a href="'.site_url('admin/delete/' . $section['table'] . '/' . $col).'">Delete</a>';
+			        				// Allow delete for all except primary admin.
+			        				if($col != 1 && $section['table'] == 'users')
+			        				{
+			        					if($section['deletable'])  $row['Actions'] .= '<a href="'.site_url('admin/delete/' . $section['table'] . '/' . $col).'">Delete</a>';
+			        				}
 			        			}
 			        			
 			        			if($opts['type'] == 'password')

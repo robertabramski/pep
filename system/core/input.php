@@ -17,16 +17,21 @@
 			}
 		}
 		
-		public function post($value)
+		public function post($value = '')
 		{
-			return $_POST[$value];
+			return empty($value) ? $_POST : $_POST[$value];
+		}
+		
+		public function has_post()
+		{
+			return !empty($_POST);
 		}
 		
 		private function sanitize($value)
 		{
 			if(is_array($value))
 			{
-				//TODO: Sanitize this right.
+				//TODO: Sanitize this recursively.
 				return $value;
 			}
 			

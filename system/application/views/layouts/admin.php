@@ -8,6 +8,9 @@
 	</head>
 	<body>
 	    <div id="content">
+	    	<?php if($result): ?>
+	    	<p><?php echo $result; ?></p>
+	    	<?php endif; ?>
 	    	<a href="<?php echo site_url('admin/logout'); ?>">Logout</a>
 	        <h1><?php echo $title; ?></h1>
 	        <h2><?php echo $lang['welcome']; ?> <?php echo $user; ?></h2>

@@ -7,6 +7,7 @@
 	
 	function site_url($loc = '') { return Pep::site_url($loc); }
 	function base_url() { return Pep::base_url(); }
+	function current_url() { return Pep::current_url(); }
 	function segment($seg) { return Pep::segment($seg); }
 	
 	function partial($name) { Pep::partial($name); }

@@ -10,7 +10,7 @@
 	    <div id="content">
 	    	<a href="<?php echo site_url('admin'); ?>">Back</a>
 	    	<a href="<?php echo site_url('admin/logout'); ?>">Logout</a>
-	    	<form>
+	    	<form method="post" action="<?php echo current_url(); ?>">
 		        <h1><?php echo $title; ?></h1>
 		        <p><?php echo $message; ?></p>
 		        <table>
@@ -25,6 +25,7 @@
 			        <?php endforeach; ?>
 		        	</tr>
 		        </table>
+		        <input type="submit" />
 		   </form>
 	    </div>
 	</body>

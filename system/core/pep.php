@@ -158,6 +158,11 @@
 			return rtrim(self::get_setting('base_url'), '/') . '/' . $loc;
 		}
 		
+		public static function current_url()
+		{
+			return $_SERVER['REQUEST_URI'];
+		}
+		
 		/**
 		 * Returns the base url as set in the settings section of the admin.
 		 * 

@@ -166,10 +166,9 @@
 			
 			foreach($data as $key => $val)
 			{
-				if($val == 0) $val = ' 0';
-				else if(is_string($val)) $val = ' '.$this->escape($val);
-				else if(is_null($val) || empty($val)) $val = ' NULL';
-				else $val = ' '.$val;
+				$key = ' '.$key;
+				if(is_null($val)) $val = 'NULL';
+				else $val = $this->escape($val);
 				
 				$f[] = $key;
 				$v[] = $val;
@@ -179,6 +178,7 @@
 			$values = implode(', ', $v);
 			
 			$query = 'INSERT INTO '.($table ? $table : $this->table).' ('.$fields.') VALUES ('.$values.')';
+			//print_q($query);
 			return $this->smart_query($query);
 		}
 		
@@ -205,11 +205,9 @@
 				{
 					if($val !== '')
 					{
-						$key = $key.' =';
-						if($val == 0) $val = ' 0';
-						else if(is_string($val)) $val = ' '.$this->escape($val);
-						else if(is_null($val) || empty($val)) $val = ' NULL';
-						else $val = ' '.$val;
+						$key = $key.' = ';
+						if(is_null($val)) $val = 'NULL';
+						else $val = $this->escape($val);
 					}
 	
 					$sets[] = $key.$val;
@@ -221,7 +219,7 @@
 			$query  = 'UPDATE '.($table ? $table : $this->table);
 			$query .= ' SET '.implode(', ', $sets);
 			$query .= ($where ? ' WHERE '.implode('', $dests) : '');
-			
+			//print_q($query);
 			return $this->smart_query($query);
 		}
 		

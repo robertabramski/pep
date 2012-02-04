@@ -54,12 +54,6 @@
 				{
 					$opts =& $fields[$key];
 					
-					// Set blanks to null.
-					if($opts['type'] != 'none')
-					{
-						if(empty($post[$key])) $post[$key] = null;
-					}
-					
 					// Let primary key auto increment.
 					if($opts['type'] == 'pk') unset($post[$key]);
 					
@@ -161,12 +155,6 @@
 				foreach($fields as $key => $value)
 				{
 					$opts =& $fields[$key];
-					
-					// Set blanks to null.
-					if($opts['type'] != 'none')
-					{
-						if(empty($post[$key])) $post[$key] = null;
-					}
 					
 					// Remove primary key, it exists already.
 					if($opts['type'] == 'pk') unset($post[$key]);

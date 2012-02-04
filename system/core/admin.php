@@ -41,6 +41,7 @@
 		
 		public function create($name = '')
 		{
+			//TODO: Need some form validation from the model fields array. 
 			if(empty($name)) show_error();
 			
 			if($this->input->has_post())
@@ -71,6 +72,7 @@
 				}
 				else
 				{
+					//TODO: Get other language strings into the proper file.
 					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $model->table));			
 				}
 				
@@ -216,7 +218,8 @@
 			        		$options = ''; $selected = $row[$key];
 			        		foreach($opts['options'] as $option) $options .= '<option'.($selected == $option ? ' selected="selected"' : '').'>'.$option.'</option>'; 
 			        		$row[$key] = '<select name="'.$key.'">'.$options.'</select>';
-			        	break;
+				        	if($id == 1 && $name == 'users') $row[$key] = $selected;
+				        break;
 			        	
 			        	case 'checkbox':
 			        		$checked = $row[$key];

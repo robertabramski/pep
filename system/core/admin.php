@@ -177,6 +177,11 @@
 				if($model->update($post, array($pk => $id)) > 0)
 				{
 					$this->session->set('result', sprintf('The %s update was successful.', $model->table));
+					
+					if($this->auth->authed_user('user_id') == $id)
+					{
+						
+					}
 				}
 				else
 				{
@@ -218,7 +223,6 @@
 			        		$options = ''; $selected = $row[$key];
 			        		foreach($opts['options'] as $option) $options .= '<option'.($selected == $option ? ' selected="selected"' : '').'>'.$option.'</option>'; 
 			        		$row[$key] = '<select name="'.$key.'">'.$options.'</select>';
-				        	if($id == 1 && $name == 'users') $row[$key] = $selected;
 				        break;
 			        	
 			        	case 'checkbox':
@@ -249,6 +253,9 @@
 		public function delete($name = '', $id = '')
 		{
 			if(empty($name) || empty($id)) show_error();
+			
+			// You cannot delete yourself.
+			if($this->auth->authed_user('user_id') == $id) show_error('You cannot delete yourself.');
 			
 			$model = $this->load->model($name);
 			$fields = $model->fields;
@@ -428,12 +435,8 @@
 			        				// Add action links from primary key.
 			        				if($section['updateable']) $row['Actions'] .= '<a href="'.site_url('admin/update/' . $section['table'] . '/' . $col).'">Update</a>';
 			        				
-			        				// Allow delete for all except primary admin.
-			        				if($col == 1 && $section['table'] == 'users') { } else
-			        				{
-			        					//TODO: Make JavaScript modal when things get pretty.
-			        					if($section['deletable'])  $row['Actions'] .= '<a href="'.site_url('admin/delete/' . $section['table'] . '/' . $col).'">Delete</a>';
-			        				}
+			        				//TODO: Make JavaScript modal when things get pretty.
+			        				if($section['deletable'])  $row['Actions'] .= '<a href="'.site_url('admin/delete/' . $section['table'] . '/' . $col).'">Delete</a>';
 			        			}
 			        			
 			        			if($opts['type'] == 'password')

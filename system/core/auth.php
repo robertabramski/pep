@@ -17,6 +17,11 @@
 			{
 				setcookie($this->cookie_name, $this->encrypt(array()), $this->expires, '/', '', false, true);
 			}
+			else
+			{
+				$saved = $_COOKIE[$this->cookie_name];
+				setcookie($this->cookie_name, $saved, $this->expires, '/', '', false, true);
+			}
 			
 			$this->check_login();
 		}

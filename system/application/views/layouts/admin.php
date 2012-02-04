@@ -15,6 +15,7 @@
 	        <h1><?php echo $title; ?></h1>
 	        <h2><?php echo $lang['welcome']; ?> <?php echo $user; ?></h2>
 	        
+	        <?php //TODO: Add paging functionality. ?>
 	        <?php if($sections): foreach($sections as $section): if($section['allowed']): ?>
 	        <h3>
 	        	<?php echo $section['menu']; ?>

@@ -178,7 +178,6 @@
 			$values = implode(', ', $v);
 			
 			$query = 'INSERT INTO '.($table ? $table : $this->table).' ('.$fields.') VALUES ('.$values.')';
-			//print_q($query);
 			return $this->smart_query($query);
 		}
 		
@@ -203,12 +202,9 @@
 			{
 				foreach($data as $key => $val)
 				{
-					if($val !== '')
-					{
-						$key = $key.' = ';
-						if(is_null($val)) $val = 'NULL';
-						else $val = $this->escape($val);
-					}
+					$key = $key.' = ';
+					if(is_null($val)) $val = 'NULL';
+					else $val = $this->escape($val);
 	
 					$sets[] = $key.$val;
 				}
@@ -219,7 +215,7 @@
 			$query  = 'UPDATE '.($table ? $table : $this->table);
 			$query .= ' SET '.implode(', ', $sets);
 			$query .= ($where ? ' WHERE '.implode('', $dests) : '');
-			//print_q($query);
+			
 			return $this->smart_query($query);
 		}
 		
@@ -228,18 +224,15 @@
 		 * 
 		 * @access	public
 		 * @param 	string|array	$where	The where clause as a string or an array.
-		 * @param 	int				$limit	The limit.
-		 * @param 	int 			$offset	The offset.
 		 * @param 	string			$table	The table selected.
 		 * 
 		 */
-		public function delete($where, $limit = null, $offset = null, $table = null)
+		public function delete($where, $table = null)
 		{
 			$dests = $this->handle_where_clause($where);
 			
 			$query  = 'DELETE FROM '.($table ? $table : $this->table);
 			$query .= ($where ? ' WHERE '.implode('', $dests) : '');
-			$query .= ($limit ? ' LIMIT '.$limit .($offset ? ', '.$offset : '') : '');
 			
 			return $this->smart_query($query);
 		}

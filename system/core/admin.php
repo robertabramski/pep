@@ -142,7 +142,7 @@
 			if($this->input->has_post())
 			{
 				$post = $this->input->post();
-				//print_q($post);
+				
 				$model = $this->load->model($name);
 				$fields = $model->fields;
 				
@@ -245,7 +245,32 @@
 		
 		public function delete($name = '', $id = '')
 		{
+			if(empty($name) || empty($id)) show_error();
+			
 			$model = $this->load->model($name);
+			$fields = $model->fields;
+			
+			foreach($fields as $key => $value)
+			{
+				$opts =& $fields[$key];
+				
+				if($opts['type'] == 'pk')
+				{
+					// Get primary key name for query.
+					$pk = $key;
+				}
+			}
+			
+			if($model->delete(array($pk => $id)) > 0)
+			{
+				$this->session->set('result', sprintf('The %s deletion was successful.', $model->table));
+			}
+			else
+			{
+				$this->session->set('result', sprintf('The %s deletion has failed.', $model->table));	
+			}
+			
+			redirect('admin');
 		}
 		
 		public function login($action = '')
@@ -401,8 +426,9 @@
 			        				if($section['updateable']) $row['Actions'] .= '<a href="'.site_url('admin/update/' . $section['table'] . '/' . $col).'">Update</a>';
 			        				
 			        				// Allow delete for all except primary admin.
-			        				if($col != 1 && $section['table'] == 'users')
+			        				if($col == 1 && $section['table'] == 'users') { } else
 			        				{
+			        					//TODO: Make JavaScript modal when things get pretty.
 			        					if($section['deletable'])  $row['Actions'] .= '<a href="'.site_url('admin/delete/' . $section['table'] . '/' . $col).'">Delete</a>';
 			        				}
 			        			}

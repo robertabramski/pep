@@ -141,7 +141,7 @@
 		 */
 		public static function redirect($loc)
 		{
-			header('Location: ' . rtrim(self::get_setting('base_url'), '/') . '/' . $loc);
+			die(header('Location: ' . rtrim(self::get_setting('base_url'), '/') . '/' . $loc));
 		}
 		
 		/**

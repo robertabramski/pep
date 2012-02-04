@@ -162,13 +162,17 @@
 					
 					if($opts['type'] == 'password')
 					{
+						//Store clear pass in case of authed user.
 						$pass = $post[$key];
+						
+						// Remove if password is blank or hash it.
 						if(empty($post[$key])) unset($post[$key]);
 						else $post[$key] = md5($post[$key]);
 					}
 					
 					if($opts['type'] == 'checkbox')
 					{
+						//TODO: Turn checkboxes into tinyint value.
 						$post[$key] = ($post[$key] == 'on' ? 'on' : 'off'); 
 					}
 				}
@@ -258,7 +262,11 @@
 			if(empty($name) || empty($id)) show_error();
 			
 			// You cannot delete yourself.
-			if($this->auth->authed_user('user_id') == $id) show_error('You cannot delete yourself.');
+			if($this->auth->authed_user('user_id') == $id)
+			{
+				$this->session->set('result', 'You cannot delete yourself.');
+				redirect('admin');
+			}
 			
 			$model = $this->load->model($name);
 			$fields = $model->fields;

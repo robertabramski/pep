@@ -7,6 +7,7 @@
 			parent::__construct();
 			
 			//TODO: User uniqueness.
+			//TODO: Need some description options to display in admin.
 			$this->fields = array
 			(
 				'user_id' 	=> array('type' => 'pk', 'name' => 'Key'),

@@ -7,8 +7,6 @@
 			parent::__construct();
 			
 			//TODO: User uniqueness.
-			//TODO: Fix user change info logout issue.
-			//TODO: Make sure user can't delete themselves.
 			$this->fields = array
 			(
 				'user_id' 	=> array('type' => 'pk', 'name' => 'Key'),

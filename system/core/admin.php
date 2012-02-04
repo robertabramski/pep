@@ -111,7 +111,6 @@
 			        	case 'password':	$row[$key] = '<input name="'.$key.'" type="password" />'; break;
 			        	case 'textarea': 	$row[$key] = '<textarea name="'.$key.'"></textarea>'; break;
 			        	case 'none':	 	$row[$key] = '<input name="'.$key.'" type="text" />'; break;
-			        	default:		 	$row[$key] = '<input name="'.$key.'" type="text" />'; break;
 			        }
 			        
 			        // Nice name doesn't exist, use column name.
@@ -163,6 +162,7 @@
 					
 					if($opts['type'] == 'password')
 					{
+						$pass = $post[$key];
 						if(empty($post[$key])) unset($post[$key]);
 						else $post[$key] = md5($post[$key]);
 					}
@@ -178,9 +178,12 @@
 				{
 					$this->session->set('result', sprintf('The %s update was successful.', $model->table));
 					
+					// If user is changing their password.
 					if($this->auth->authed_user('user_id') == $id)
 					{
-						
+						// Reauth after password change.
+						$user = $this->auth->authed_user('user');
+						$this->auth->login($user, $pass);
 					}
 				}
 				else

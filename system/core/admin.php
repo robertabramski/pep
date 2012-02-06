@@ -147,11 +147,11 @@
 				$model = $this->load->model($name);
 				$fields = $model->fields;
 				
-				foreach($fields as $key => $value)
+				/*foreach($fields as $key => $value)
 				{
 					// Get primary key name for query.
 					if($fields[$key]['type'] == 'pk') $pk = $key;
-				}
+				}*/
 				
 				foreach($fields as $key => $value)
 				{
@@ -162,7 +162,7 @@
 					
 					if($opts['type'] == 'password')
 					{
-						//Store clear pass in case of authed user.
+						// Store clear pass in case of authed user.
 						$pass = $post[$key];
 						
 						// Remove if password is blank or hash it.
@@ -178,7 +178,7 @@
 				}
 				
 				// Set session data for success or failure.
-				if($model->update($post, array($pk => $id)) > 0)
+				if($model->update($post, 'ROWID = '. $id) > 0)
 				{
 					$this->session->set('result', sprintf('The %s update was successful.', $model->table));
 					
@@ -186,8 +186,7 @@
 					if($this->auth->authed_user('user_id') == $id)
 					{
 						// Reauth after password change.
-						$user = $this->auth->authed_user('user');
-						$this->auth->login($user, $pass);
+						$this->auth->login($post['user'], $pass);
 					}
 				}
 				else
@@ -202,7 +201,7 @@
 				$model = $this->load->model($name);
 				$fields = $model->fields;
 				
-				foreach($fields as $key => $value)
+				/*foreach($fields as $key => $value)
 				{
 					$opts =& $fields[$key];
 					
@@ -211,20 +210,22 @@
 						// Get primary key name for query.
 						$pk = $key;
 					}
-					
-					// Nice name doesn't exist, use column name.
-			        if(!isset($opts['name'])) $opts['name'] = $key;
-				}
+				}*/
 				
 				// Select item to update.
 				$model->from($model->table);
-				$rows = $model->select(array_keys($model->fields), array($pk => $id), 1);
+				$rows = $model->select(array_keys($model->fields), 'ROWID = '. $id, 1);
 				$row = $rows[0];
 				
 				// Add markup for update view.
 				foreach($fields as $key => $value)
 				{
-					switch($fields[$key]['type'])
+					$opts =& $fields[$key];
+					
+					// Nice name doesn't exist, use column name.
+			        if(!isset($opts['name'])) $opts['name'] = $key;
+					
+					switch($opts['type'])
 			        {
 			        	case 'select':
 			        		$options = ''; $selected = $row[$key];
@@ -271,7 +272,7 @@
 			$model = $this->load->model($name);
 			$fields = $model->fields;
 			
-			foreach($fields as $key => $value)
+			/*foreach($fields as $key => $value)
 			{
 				$opts =& $fields[$key];
 				
@@ -280,9 +281,9 @@
 					// Get primary key name for query.
 					$pk = $key;
 				}
-			}
+			}*/
 			
-			if($model->delete(array($pk => $id)) > 0)
+			if($model->delete('ROWID = '.$id) > 0)
 			{
 				$this->session->set('result', sprintf('The %s deletion was successful.', $model->table));
 			}

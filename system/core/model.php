@@ -314,7 +314,7 @@
 			{
 				switch($this->type)
 				{
-					case "PDO": 	return $this->db->exec($query); 
+					case "PDO": 	return $this->db->exec($query);
 					case "SQLite3": 
 						$this->db->exec($query);
 						return $this->db->changes();
@@ -322,6 +322,22 @@
 			}
 			
 			return $this->query($query);
+		}
+		
+		/**
+		 * Gets text describing the most recent failed request. 
+		 * 
+		 * @access	public
+		 * @return	string
+		 * 
+		 */
+		public function get_error()
+		{
+			switch($this->type)
+			{
+				case 'PDO': 	$error = $this->db->errorInfo(); return $error[2]; 
+				case 'SQLite3': return $this->db->lastErrorMsg(); 
+			}
 		}
 		
 		/**
@@ -337,7 +353,7 @@
 		 */
 		public function query($query)
 		{
-			$result = $this->db->query($query);
+			$result = @$this->db->query($query);
 			return $result ? $result : false;
 		}
 

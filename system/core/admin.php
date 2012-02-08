@@ -68,12 +68,13 @@
 				// Set session data for success or failure.
 				if($model->insert($post))
 				{
-					$this->session->set('result', sprintf('The %s insert was successful.', $model->table));
+					$this->session->set('result', sprintf($this->lang['admin.insert_pass'], $model->table));
 				}
 				else
 				{
 					//TODO: Get other language strings into the proper file.
-					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $model->table));			
+					$db_error = $model->get_type() . ' Error: "' . $model->get_error() . '"';
+					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $db_error));		
 				}
 				
 				redirect('admin');

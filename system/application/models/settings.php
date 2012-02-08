@@ -9,6 +9,7 @@
 			$this->creatable = false;
 			$this->updateable = true;
 			$this->deletable = false;
+			$this->description = 'Change your site settings.';
 			$this->fields = array
 			(
 				'setting_id'	=> array('type' => 'pk', 'name' => 'Key'),

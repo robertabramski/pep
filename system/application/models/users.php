@@ -6,7 +6,7 @@
 		{
 			parent::__construct();
 			
-			//TODO: Need some description options to display in admin.
+			$this->description = 'Add, remove and edit users.';
 			$this->fields = array
 			(
 				'user_id' 	=> array('type' => 'pk', 'name' => 'Key'),

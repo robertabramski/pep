@@ -148,12 +148,6 @@
 				$model = $this->load->model($name);
 				$fields = $model->fields;
 				
-				/*foreach($fields as $key => $value)
-				{
-					// Get primary key name for query.
-					if($fields[$key]['type'] == 'pk') $pk = $key;
-				}*/
-				
 				foreach($fields as $key => $value)
 				{
 					$opts =& $fields[$key];
@@ -201,17 +195,6 @@
 			{
 				$model = $this->load->model($name);
 				$fields = $model->fields;
-				
-				/*foreach($fields as $key => $value)
-				{
-					$opts =& $fields[$key];
-					
-					if($opts['type'] == 'pk')
-					{
-						// Get primary key name for query.
-						$pk = $key;
-					}
-				}*/
 				
 				// Select item to update.
 				$model->from($model->table);
@@ -272,17 +255,6 @@
 			
 			$model = $this->load->model($name);
 			$fields = $model->fields;
-			
-			/*foreach($fields as $key => $value)
-			{
-				$opts =& $fields[$key];
-				
-				if($opts['type'] == 'pk')
-				{
-					// Get primary key name for query.
-					$pk = $key;
-				}
-			}*/
 			
 			if($model->delete('ROWID = '.$id) > 0)
 			{
@@ -426,7 +398,8 @@
 							'fields' 		=> $model->fields,
 							'creatable' 	=> $model->creatable,
 							'updateable' 	=> $model->updateable,
-							'deletable' 	=> $model->deletable
+							'deletable' 	=> $model->deletable,
+							'description'	=> $model->description
 						);
 					}
 				}

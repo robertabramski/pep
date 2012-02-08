@@ -23,6 +23,7 @@
 	        	<a href="<?php echo site_url('admin/create/'.$section['table']); ?>">Create</a>
 	        	<?php endif; ?>
 	        </h3>
+	        <p><?php echo $section['description']; ?></p>
 	        <?php if($section['rows']): ?>
 	        <table>
 				<thead>

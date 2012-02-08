@@ -20,6 +20,7 @@
 		public $creatable = true;
 		public $updateable = true;
 		public $deletable = true;
+		public $description;
 		
 		/**
 		 * Constructs the class. 

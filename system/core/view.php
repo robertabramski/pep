@@ -35,10 +35,10 @@
 				if(file_exists($this->template))
 				{
 					$parser = new Parser();
-					$buffer = $parser->parse(file_get_contents($this->template), $data, 'View::parse_template');
+					$buffer = $parser->parse(file_get_contents($this->template), $data, array($this, 'parse_template'));
 					
 					$minified = Pep::get_setting('minify');
-					echo ($minified ? View::minify($buffer) : $buffer);
+					echo ($minified ? $this->minify($buffer) : $buffer);
 				}
 				else
 				{
@@ -54,7 +54,7 @@
 			$item = utf8_encode(stripslashes($item));
 		}
 		
-		public static function parse_template($name, $attributes, $content)
+		public function parse_template($name, $attributes, $content)
 		{
 			if($name == 'partial')
 			{
@@ -82,7 +82,7 @@
 			}
 		}
 		
-		public static function minify($buffer)
+		public function minify($buffer)
 		{
 			$search = array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s');
 			$replace = array('>', '<', '\\1');
@@ -106,7 +106,7 @@
 			if(file_exists($this->template))
 			{
 				$minified = Pep::get_setting('minify');
-				$minified ? ob_start('View::minify') : ob_start();
+				$minified ? ob_start(array($this, 'minify')) : ob_start();
 				require($this->template);
 				ob_end_flush();
 			}

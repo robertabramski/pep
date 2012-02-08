@@ -24,6 +24,8 @@
 		
 		public function render($data = null)
 		{
+			array_walk_recursive($data, array($this, 'encode_output'));
+			
 			if(empty($this->theme))
 			{
 				$this->render_view($data);
@@ -45,6 +47,11 @@
 					$this->render_view($data);
 				}
 			}
+		}
+		
+		private function encode_output(&$item, $key)
+		{
+			$item = utf8_encode(stripslashes($item));
 		}
 		
 		public static function parse_template($name, $attributes, $content)

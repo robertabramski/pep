@@ -10,15 +10,11 @@
 			{
 				$_POST = array_map('stripslashes', $_POST);
 			}
-			
-			foreach($_POST as $key => $value)
-			{
-				$_POST[$key] = $this->sanitize($value);
-			}
 		}
 		
-		public function post($value = '')
+		public function post($value = '', $sanitize = true)
 		{
+			if($sanitize) array_walk_recursive($_POST, array($this, 'sanitize_input'));
 			return empty($value) ? $_POST : $_POST[$value];
 		}
 		
@@ -27,15 +23,9 @@
 			return !empty($_POST);
 		}
 		
-		private function sanitize($value)
+		private function sanitize_input(&$item, $key)
 		{
-			if(is_array($value))
-			{
-				//TODO: Sanitize this recursively.
-				return $value;
-			}
-			
-			return strip_tags(addslashes($value));
+			$item = utf8_encode(strip_tags(addslashes($item)));
 		}
 	}
 	

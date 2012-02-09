@@ -10,8 +10,8 @@
 			$this->fields = array
 			(
 				'user_id' 	=> array('type' => 'pk', 'name' => 'Key'),
-				'user' 		=> array('type' => 'text', 'name' => 'Username', 'validate' => array('required', 'alpha_num')),
-				'pass' 		=> array('type' => 'password', 'name' => 'Password', 'validate' => array('alpha_num_dash')),
+				'user' 		=> array('type' => 'text', 'name' => 'User', 'validate' => array('required', 'alpha_num')),
+				'pass' 		=> array('type' => 'password', 'name' => 'Pass', 'validate' => array('alpha_num_dash')),
 				'role' 		=> array('type' => 'select', 'name' => 'Role', 'options' => array('user', 'admin'))
 			);
 		}

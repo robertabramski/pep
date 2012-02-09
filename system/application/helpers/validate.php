@@ -23,32 +23,38 @@
 		
 		public function run($rules)
 		{
-			$results = array();
-			
-			foreach($rules as $key => $rules)
+			if(is_array($rules) && !empty($rules))
 			{
-				$value = $_POST[$key];
+				$results = array();
 				
-				foreach($rules as $rule)
+				foreach($rules as $key => $value)
 				{
-					if(method_exists($this, $rule))
+					$input = $_POST[$key];
+					
+					if(is_array($value) && !empty($value))
 					{
-						$result = $this->$rule($value);
-						$result ? $message = '' : $message = sprintf($this->messages[$rule], $key);
-						$results[] = array('rule' => $rule, 'result' => $result, 'message' => $message);
-					}
-					else
-					{
-						show_error(sprintf('The validation function %s does not exist.', $rule));
+						foreach($value as $rule)
+						{
+							if(method_exists($this, $rule))
+							{
+								$result = $this->$rule($input);
+								$result ? $message = '' : $message = sprintf($this->messages[$rule], $key);
+								$results[] = array('rule' => $rule, 'result' => $result, 'message' => $message);
+							}
+							else
+							{
+								show_error(sprintf('The validation function %s does not exist.', $rule));
+							}
+						}
 					}
 				}
-			}
-			
-			$this->results = $results;
-			
-			foreach($results as $result)
-			{
-				if(!$result['result']) return false;
+				
+				$this->results = $results;
+				
+				foreach($results as $result)
+				{
+					if(!$result['result']) return false;
+				}
 			}
 			
 			return true;
@@ -78,18 +84,21 @@
 		
 		public function email($value)
 		{
+			if(empty($value)) return true;
 			$valid = filter_var($value, FILTER_VALIDATE_EMAIL);
-			return $valid ? true : false;  
+			return $valid ? true : false;
 		}
 		
 		public function url($value)
 		{
+			if(empty($value)) return true;
 			$valid = filter_var($value, FILTER_VALIDATE_URL);
 			return $valid ? true : false;		
 		}
 		
 		public function ip($value)
 		{
+			if(empty($value)) return true;
 			$valid = filter_var($value, FILTER_VALIDATE_IP);
 			return $valid ? true : false;
 		}
@@ -102,6 +111,7 @@
 		
 		public function alpha($value)
 		{
+			if(empty($value)) return true;
 			$options = array('options' => array('regexp' => "/^[a-z]+$/i"));
 			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;
@@ -109,6 +119,7 @@
 		
 		public function numeric($value)
 		{
+			if(empty($value)) return true;
 			$options = array('options' => array('regexp' => "/^[\-+]?[0-9]*\.?[0-9]+$/"));
 			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;
@@ -116,6 +127,7 @@
 		
 		public function decimal($value)
 		{
+			if(empty($value)) return true;
 			$options = array('options' => array('regexp' => "/^[\-+]?[0-9]+\.[0-9]+$/"));
 			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;
@@ -123,6 +135,7 @@
 		
 		public function alpha_num($value)
 		{
+			if(empty($value)) return true;
 			$options = array('options' => array('regexp' => '/^([a-z0-9])+$/i'));
 			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;
@@ -130,6 +143,7 @@
 		
 		public function alpha_num_dash($value)
 		{
+			if(empty($value)) return true;
 			$options = array('options' => array('regexp' => '/^([a-z0-9_-])+$/i'));
 			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;
@@ -137,6 +151,7 @@
 		
 		public function alpha_num_sp($value)
 		{
+			if(empty($value)) return true;
 			$options = array('options' => array('regexp' => '/^([a-z0-9 ])+$/i'));
 			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;
@@ -144,6 +159,7 @@
 		
 		public function alpha_num_plus($value)
 		{
+			if(empty($value)) return true;
 			$options = array('options' => array('regexp' => '/^([a-z0-9_- ])+$/i'));
 			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;
@@ -151,6 +167,7 @@
 		
 		public function int($value)
 		{
+			if(empty($value)) return true;
 			$options = array('options' => array('regexp' => '/^[\-+]?[0-9]+$/'));
 			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;
@@ -158,6 +175,7 @@
 		
 		public function in_range($value, $min, $max)
 		{
+			if(empty($value)) return true;
 			$options = array('options' => array('min_range' => $min, 'max_range' => $max));
 			$valid = filter_var($value, FILTER_VALIDATE_INT, $options);
 			return $valid ? true : false;

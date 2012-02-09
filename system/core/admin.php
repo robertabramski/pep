@@ -73,7 +73,7 @@
 				else
 				{
 					$db_error = $this->show_db_error($model);
-					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $db_error));	
+					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $db_error));
 				}
 				
 				redirect('admin');
@@ -87,11 +87,6 @@
 				foreach($fields as $key => $value)
 				{
 					$opts =& $fields[$key];
-					
-					/*if(empty($opts['type']))
-			        {
-			        	$row[$key] = '<input name="'.$key.'" type="text" />'; 
-			        }*/
 					
 					switch($opts['type'])
 			        {
@@ -151,6 +146,9 @@
 				{
 					$opts =& $fields[$key];
 					
+					// Get validation rules.
+					$rules[$key] = $fields[$key]['validate'];
+					
 					// Remove primary key, it exists already.
 					if($opts['type'] == 'pk') unset($post[$key]);
 					
@@ -166,30 +164,44 @@
 					
 					if($opts['type'] == 'checkbox')
 					{
-						//TODO: Turn checkboxes into tinyint value.
-						$post[$key] = ($post[$key] == 'on' ? 'on' : 'off'); 
+						$post[$key] = ($post[$key] == 'on' ? 'on' : 'off');
 					}
 				}
 				
-				// Set session data for success or failure.
-				if($model->update($post, 'ROWID = '. $id) > 0)
+				// Run validation.
+				if($this->validate->run($rules))
 				{
-					$this->session->set('result', sprintf($this->lang['admin.update_pass'], $model->table));
-					
-					// If user is changing their password.
-					if($this->auth->authed_user('user_id') == $id)
+					// Set session data for success or failure.
+					if($model->update($post, 'ROWID = '. $id) > 0)
 					{
-						// Reauth after password change.
-						$this->auth->login($post['user'], $pass);
+						$this->session->set('result', sprintf($this->lang['admin.update_pass'], $model->table));
+						
+						// If user is changing their password.
+						if($this->auth->authed_user('user_id') == $id)
+						{
+							// Reauth after password change.
+							$this->auth->login($post['user'], $pass);
+						}
 					}
+					else
+					{
+						$db_error = $this->show_db_error($model);
+						$this->session->set('result', sprintf($this->lang['admin.update_fail'], $model->table, $db_error));		
+					}
+					
+					redirect('admin');
 				}
 				else
-				{
-					$db_error = $this->show_db_error($model);
-					$this->session->set('result', sprintf($this->lang['admin.update_fail'], $model->table, $db_error));			
+				{					
+					// Validation failed. Get validation results array.
+					$results = $this->validate->get_results();
+					
+					// Set session data. Serialize validation results for display on redirect.
+					$this->session->set('failed', $this->lang['admin.valid_fail']);
+					$this->session->set('errors', serialize($results));
+					
+					redirect('admin/update/'.$name.'/'.$id);
 				}
-				
-				redirect('admin');
 			}
 			else
 			{
@@ -230,16 +242,24 @@
 			        }
 				}
 				
+				// Retrieve any session variables.
+				$failed = $this->session->get('failed');
+				$errors = $this->session->get('errors');
+				
 				$data = array
 				(
 					'title' 	=> 'Admin',
-					'message' 	=> 'Update '. $model->menu,
+					'message' 	=> empty($failed) ? 'Update '. $model->menu : $failed,
+					'errors'	=> empty($errors) ? null : unserialize($errors),
 					'fields'	=> $fields,
 					'row'		=> $row
 				);
 				
 				$template = $this->load->view('update');
 				$template->render($data);
+				
+				$this->session->delete('failed');
+				$this->session->delete('errors');
 			}
 		}
 		

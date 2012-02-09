@@ -14,7 +14,7 @@
 			(
 				'setting_id'	=> array('type' => 'pk', 'name' => 'Key'),
 				'name' 			=> array('type' => 'none', 'name' => 'Name'),
-				'value' 		=> array('type' => 'text', 'name' => 'Value')
+				'value' 		=> array('type' => 'text', 'name' => 'Value', 'validate' => array('required', 'alpha_num_dash'))
 			);
 		}
 		

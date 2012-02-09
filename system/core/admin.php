@@ -73,7 +73,7 @@
 				else
 				{
 					//TODO: Get other language strings into the proper file.
-					$db_error = $model->get_type() . ' Error: "' . $model->get_error() . '"';
+					$db_error = $this->show_db_error($model);
 					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $db_error));		
 				}
 				
@@ -175,7 +175,7 @@
 				// Set session data for success or failure.
 				if($model->update($post, 'ROWID = '. $id) > 0)
 				{
-					$this->session->set('result', sprintf('The %s update was successful.', $model->table));
+					$this->session->set('result', sprintf($this->lang['admin.update_pass'], $model->table));
 					
 					// If user is changing their password.
 					if($this->auth->authed_user('user_id') == $id)
@@ -186,7 +186,8 @@
 				}
 				else
 				{
-					$this->session->set('result', sprintf('The %s update has failed.', $model->table));			
+					$db_error = $this->show_db_error($model);
+					$this->session->set('result', sprintf($this->lang['admin.update_fail'], $model->table, $db_error));			
 				}
 				
 				redirect('admin');
@@ -249,7 +250,7 @@
 			// You cannot delete yourself.
 			if($this->auth->authed_user('user_id') == $id)
 			{
-				$this->session->set('result', 'You cannot delete yourself.');
+				$this->session->set('result', $this->lang['admin.delete_self']);
 				redirect('admin');
 			}
 			
@@ -258,11 +259,12 @@
 			
 			if($model->delete('ROWID = '.$id) > 0)
 			{
-				$this->session->set('result', sprintf('The %s deletion was successful.', $model->table));
+				$this->session->set('result', sprintf($this->lang['admin.delete_pass'], $model->table));
 			}
 			else
 			{
-				$this->session->set('result', sprintf('The %s deletion has failed.', $model->table));	
+				$db_error = $this->show_db_error($model);
+				$this->session->set('result', sprintf($this->lang['admin.delete_fail'], $model->table, $db_error));	
 			}
 			
 			redirect('admin');
@@ -284,9 +286,6 @@
 					'pass' => array('required', 'alpha_num_dash')
 				);
 				
-				// Custom messages can be set before running validation.
-				$this->validate->set_message('required', 'The %s field cannot be left blank.');
-				
 				if($this->validate->run($rules))
 				{
 					// Check credentials.
@@ -298,7 +297,7 @@
 					{
 						// Login failed. Set session data to display on redirect.
 						$this->session->set('user', $user);
-						$this->session->set('failed', 'The login was invalid.');
+						$this->session->set('failed', $this->lang['admin.login_fail']);
 						
 						redirect('admin/login');
 					}
@@ -310,7 +309,7 @@
 					
 					// Set session data. Serialize validation results for display on redirect.
 					$this->session->set('user', $user);
-					$this->session->set('failed', 'Validation failed. See errors below.');
+					$this->session->set('failed', $this->lang['admin.valid_fail']);
 					$this->session->set('errors', serialize($results));
 					
 					redirect('admin/login');
@@ -332,7 +331,7 @@
 					$data = array
 					(
 						'title' 	=> 'Login',
-						'message' 	=> empty($failed) ? 'You are not logged in.' : $failed,
+						'message' 	=> empty($failed) ? $this->lang['admin.login_none'] : $failed,
 						'errors'	=> empty($errors) ? null : unserialize($errors),
 						'user'		=> $this->session->get('user')
 					);
@@ -352,6 +351,11 @@
 		{
 			$this->auth->logout();
 			redirect('admin/login');
+		}
+		
+		private function show_db_error($model)
+		{
+			return $model->get_type() . ' '.$this->lang['error'].': "' . $model->get_error() . '"';
 		}
 		
 		private function get_admin_sections()
@@ -380,7 +384,7 @@
 							if(!$model->fields) 
 							{
 								// Fields must be set so user can see it.
-								Pep::show_error(sprintf('The fields array in the model %s must be set to show up in the admin.', $file));
+								Pep::show_error(sprintf($this->lang['admin.field_arr_fail'], $file));
 							}
 							
 							// Select what to show.
@@ -419,10 +423,9 @@
 			        			if($opts['type'] == 'pk')
 			        			{
 			        				// Add action links from primary key.
-			        				if($section['updateable']) $row['Actions'] .= '<a href="'.site_url('admin/update/' . $section['table'] . '/' . $col).'">Update</a>';
-			        				
-			        				//TODO: Make JavaScript modal when things get pretty.
-			        				if($section['deletable'])  $row['Actions'] .= '<a href="'.site_url('admin/delete/' . $section['table'] . '/' . $col).'">Delete</a>';
+			        				//TODO: Make JavaScript modal for delete when things get pretty.
+			        				if($section['updateable']) $row[$this->lang['actions']] .= '<a href="'.site_url('admin/update/' .$section['table']. '/' . $col).'">'.$this->lang['update'].'</a>';
+			        				if($section['deletable'])  $row[$this->lang['actions']] .= '<a href="'.site_url('admin/delete/' .$section['table']. '/' . $col).'">'.$this->lang['delete'].'</a>';
 			        			}
 			        			
 			        			if($opts['type'] == 'password')

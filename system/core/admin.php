@@ -41,7 +41,6 @@
 		
 		public function create($name = '')
 		{
-			//TODO: Need some form validation from the model fields array. 
 			if(empty($name)) show_error();
 			
 			if($this->input->has_post())
@@ -55,6 +54,9 @@
 				{
 					$opts =& $fields[$key];
 					
+					// Get validation rules.
+					$rules[$key] = $fields[$key]['validate'];
+					
 					// Let primary key auto increment.
 					if($opts['type'] == 'pk') unset($post[$key]);
 					
@@ -65,18 +67,33 @@
 					}
 				}
 				
-				// Set session data for success or failure.
-				if($model->insert($post))
+				// Run validation.
+				if($this->validate->run($rules))
 				{
-					$this->session->set('result', sprintf($this->lang['admin.insert_pass'], $model->table));
+					// Set session data for success or failure.
+					if($model->insert($post))
+					{
+						$this->session->set('result', sprintf($this->lang['admin.insert_pass'], $model->table));
+					}
+					else
+					{
+						$db_error = $this->show_db_error($model);
+						$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $db_error));
+					}
+					
+					redirect('admin');
 				}
 				else
-				{
-					$db_error = $this->show_db_error($model);
-					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $db_error));
+				{					
+					// Validation failed. Get validation results array.
+					$results = $this->validate->get_results();
+					
+					// Set session data. Serialize validation results for display on redirect.
+					$this->session->set('failed', $this->lang['admin.valid_fail']);
+					$this->session->set('errors', serialize($results));
+					
+					redirect('admin/create/'.$name);
 				}
-				
-				redirect('admin');
 			}
 			else
 			{
@@ -118,16 +135,24 @@
 					}
 				}
 				
+				// Retrieve any session variables.
+				$failed = $this->session->get('failed');
+				$errors = $this->session->get('errors');
+				
 				$data = array
 				(
 					'title' 	=> 'Admin',
-					'message' 	=> 'Create '. $model->menu,
+					'message' 	=> empty($failed) ? 'Create '. $model->menu : $failed,
+					'errors'	=> empty($errors) ? null : unserialize($errors),
 					'fields'	=> $fields,
 					'row'		=> $row
 				);
 				
 				$template = $this->load->view('create');
 				$template->render($data);
+				
+				$this->session->delete('failed');
+				$this->session->delete('errors');
 			}
 		}
 		

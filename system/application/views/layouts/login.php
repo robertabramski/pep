@@ -12,8 +12,8 @@
 	        <h2><?php echo $message; ?></h2>
 	        <?php if($errors): ?>
 	        <ul>
-	        	<?php foreach($errors as $error): $message = $error['message']; ?>
-	        	<?php if($message): ?><li><?php echo $message; ?></li><?php endif; ?>
+	        	<?php foreach($errors as $error): ?>
+	        	<?php if($error['message']): ?><li><?php echo $error['message']; ?></li><?php endif; ?>
 	        	<?php endforeach; ?>
 	        </ul>
 	        <?php endif;?>

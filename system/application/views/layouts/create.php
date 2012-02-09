@@ -13,6 +13,13 @@
 	    	<form method="post" action="<?php echo current_url(); ?>">
 		        <h1><?php echo $title; ?></h1>
 		        <p><?php echo $message; ?></p>
+		        <?php if($errors): ?>
+		        <ul>
+		        	<?php foreach($errors as $error): ?>
+		        	<?php if($error['message']): ?><li><?php echo $error['message']; ?></li><?php endif; ?>
+		        	<?php endforeach; ?>
+		        </ul>
+		        <?php endif;?>
 		        <table>
 		        	<thead>
 			        	<?php foreach($fields as $field): ?>

@@ -72,9 +72,8 @@
 				}
 				else
 				{
-					//TODO: Get other language strings into the proper file.
 					$db_error = $this->show_db_error($model);
-					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $db_error));		
+					$this->session->set('result', sprintf($this->lang['admin.insert_fail'], $model->table, $db_error));	
 				}
 				
 				redirect('admin');
@@ -89,10 +88,10 @@
 				{
 					$opts =& $fields[$key];
 					
-					if(empty($opts['type']))
+					/*if(empty($opts['type']))
 			        {
 			        	$row[$key] = '<input name="'.$key.'" type="text" />'; 
-			        }
+			        }*/
 					
 					switch($opts['type'])
 			        {
@@ -104,8 +103,8 @@
 			        	
 			        	case 'checkbox':
 			        		$checked = $row[$key];
-			        		$row[$key]  = '<input name="'.$key.'" type="checkbox"'.($checked == 'on' ? ' checked="checked"' : '').' />';
-			        		$row[$key] .= '<input name="'.$key.'" type="hidden" value="'.($checked == 'on' ? 'on' : 'off').'" />';
+			        		$row[$key]  = '<input name="'.$key.'" type="hidden" value="off" />';
+			        		$row[$key] .= '<input name="'.$key.'" type="checkbox"'.($checked == 'on' ? ' checked="checked"' : '').' />';
 			        	break;
 			        	
 			        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" />'; break;
@@ -220,7 +219,8 @@
 			        	
 			        	case 'checkbox':
 			        		$checked = $row[$key];
-			        		$row[$key]  = '<input name="'.$key.'" type="checkbox"'.($checked == 'on' ? ' checked="checked"' : '').' />';
+			        		$row[$key]  = '<input name="'.$key.'" type="hidden" value="off" />';
+			        		$row[$key] .= '<input name="'.$key.'" type="checkbox"'.($checked == 'on' ? ' checked="checked"' : '').' />';
 			        	break;
 			        	
 			        	case 'text': 		$row[$key] = '<input name="'.$key.'" type="text" value="'.$row[$key].'" />'; break;
@@ -248,7 +248,7 @@
 			if(empty($name) || empty($id)) show_error();
 			
 			// You cannot delete yourself.
-			if($this->auth->authed_user('user_id') == $id)
+			if($this->auth->authed_user('user_id') == $id && $name == 'user')
 			{
 				$this->session->set('result', $this->lang['admin.delete_self']);
 				redirect('admin');
@@ -355,7 +355,7 @@
 		
 		private function show_db_error($model)
 		{
-			return $model->get_type() . ' '.$this->lang['error'].': "' . $model->get_error() . '"';
+			return $model->get_type() . ' '.$this->lang['error'].': ' . $model->get_error();
 		}
 		
 		private function get_admin_sections()

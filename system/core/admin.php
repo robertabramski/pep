@@ -293,7 +293,7 @@
 			if(empty($name) || empty($id)) show_error();
 			
 			// You cannot delete yourself.
-			if($this->auth->authed_user('user_id') == $id && $name == 'user')
+			if($this->auth->authed_user('user_id') == $id && $name == 'users')
 			{
 				$this->session->set('result', $this->lang['admin.delete_self']);
 				redirect('admin');

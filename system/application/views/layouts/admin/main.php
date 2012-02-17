@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title><?php echo $title; ?></title>
-		<meta name="author" content="" />
-		<meta name="description" content="" />
-		<meta name="keywords" content="" />
-	</head>
-	<body>
+<?php include('header.php'); ?>
 	    <div id="content">
 	    	<?php if($result): ?>
 	    	<p><?php echo $result; ?></p>
@@ -44,5 +36,4 @@
 	        
 	        <?php //TODO: Add table/model generator. ?>
 	    </div>
-	</body>
-</html>
+<?php include('footer.php'); ?>

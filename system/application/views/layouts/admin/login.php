@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title><?php echo $title; ?></title>
-		<meta name="author" content="" />
-		<meta name="description" content="" />
-		<meta name="keywords" content="" />
-	</head>
-	<body>
+<?php include('header.php'); ?>
 		<div id="content">
 	        <h1><?php echo $title; ?></h1>
 	        <h2><?php echo $message; ?></h2>
@@ -24,5 +16,4 @@
 		    	<input type="submit" value="Submit" />
 		    </form>
 	    </div>
-	</body>
-</html>
+<?php include('footer.php'); ?>

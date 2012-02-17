@@ -28,7 +28,7 @@
 					'result'	=> $this->session->get('result')
 				);
 				
-				$template = $this->load->view('admin');
+				$template = $this->load->view('admin/main');
 				$template->render($data);
 				
 				$this->session->delete('result');
@@ -148,7 +148,7 @@
 					'row'		=> $row
 				);
 				
-				$template = $this->load->view('create');
+				$template = $this->load->view('admin/create');
 				$template->render($data);
 				
 				$this->session->delete('failed');
@@ -280,7 +280,7 @@
 					'row'		=> $row
 				);
 				
-				$template = $this->load->view('update');
+				$template = $this->load->view('admin/update');
 				$template->render($data);
 				
 				$this->session->delete('failed');
@@ -381,7 +381,7 @@
 						'user'		=> $this->session->get('user')
 					);
 					
-					$template = $this->load->view('login');
+					$template = $this->load->view('admin/login');
 					$template->render($data);
 					
 					// Session data no longer needed.

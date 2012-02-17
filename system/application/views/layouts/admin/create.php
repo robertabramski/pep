@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title><?php echo $title; ?></title>
-		<meta name="author" content="" />
-		<meta name="description" content="" />
-		<meta name="keywords" content="" />
-	</head>
-	<body>
+<?php include('header.php'); ?>
 	    <div id="content">
 	    	<a href="<?php echo site_url('admin'); ?>">Back</a>
 	    	<a href="<?php echo site_url('admin/logout'); ?>">Logout</a>
@@ -35,5 +27,4 @@
 		        <input type="submit" value="Submit" />
 		   </form>
 	    </div>
-	</body>
-</html>
+<?php include('footer.php'); ?>

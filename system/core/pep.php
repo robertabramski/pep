@@ -123,12 +123,32 @@
 			}
 		}
 		
+		/**
+		 * Loads a partial file from either a view or a theme.
+		 * 
+		 * @access	public
+		 * @param 	string $name	The name of the partial to load.
+		 * @return	mixed
+		 * 
+		 */
 		public function partial($name)
 		{
 			$theme = self::get_setting('theme');
 			
-			if(!empty($theme)) return file_get_contents(THEME_DIR . $theme . '/partials/' . $name . '.html');
-			else include(APP_DIR . 'views/partials/' . $name . '.php');
+			if(empty($theme)) 
+			{
+				$file = APP_DIR . 'views/partials/' . $name . '.php';
+				
+				if(file_exists($file)) include($file);
+				else Pep::show_error(sprintf('The view partial file %s.php does not exist.', $name));
+			}
+			else 
+			{
+				$file = THEME_DIR . $theme . '/partials/' . $name . '.html';
+				
+				if(file_exists($file)) return file_get_contents($file);
+				else Pep::show_error(sprintf('The theme partial file %s.html does not exist.', $name));
+			}
 		}
 		
 		/**

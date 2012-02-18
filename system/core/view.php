@@ -18,7 +18,7 @@
 			else
 			{
 				$this->template = THEME_DIR . $this->theme . '/layouts/' . $view . '.html';
-				require_once(ROOT_DIR . 'system/core/parser.php');
+				require_once(CORE_DIR . 'parser.php');
 			}
 		}
 		

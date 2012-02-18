@@ -13,7 +13,7 @@
 			
 			// Load language. 
 			$this->lang = $this->load->lang(Pep::get_setting('language'));
-		} 
+		}
 		
 		public function index()
 		{
@@ -398,6 +398,13 @@
 			redirect('admin/login');
 		}
 		
+		public function generate()
+		{
+			require(CORE_DIR . 'generate.php');
+			$generate = new Generate();
+			echo $generate->table('test');
+		}
+		
 		private function show_db_error($model)
 		{
 			return $model->get_type() . ' '.$this->lang['error'].': ' . $model->get_error();
@@ -413,7 +420,7 @@
 				// Build sections to display.
 				foreach($files as $file)
 				{
-					if($file != '..' && $file != '.')
+					if($file != '..' && $file != '.' && substr($file, 0, 1) != '.')
 					{
 						// Load each model.
 						$name = $this->string->remove_ext($file);

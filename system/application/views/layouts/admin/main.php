@@ -35,5 +35,6 @@
 	        <?php endif; endforeach; endif; ?>
 	        
 	        <?php //TODO: Add table/model generator. ?>
+	        <?php //TODO: Add database backup. ?>
 	    </div>
 <?php include('footer.php'); ?>

@@ -12,8 +12,7 @@
 	 * https://github.com/robertabramski/pep
 	 * 
 	 * For those of you looking to modify the appearance of the admin pages, 
-	 * change the view files admin.php and login.php or add an admin.html 
-	 * file and a login.html file to your theme.
+	 * change the view files in the admin directory or override a view in your theme.
 	 * 
 	 */
 	require(CORE_DIR . 'admin.php');

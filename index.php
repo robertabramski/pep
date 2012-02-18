@@ -26,6 +26,9 @@
 	*
 	*/
 	
+	// Set to false for production.
+	define('DEV_MODE', true);
+	
 	// Configure constants.
 	define('ROOT_DIR', realpath(dirname(__FILE__)) .'/');
 	define('APP_DIR', ROOT_DIR .'system/application/');

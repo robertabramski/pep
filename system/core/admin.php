@@ -398,11 +398,63 @@
 			redirect('admin/login');
 		}
 		
-		public function generate()
+		public function generate($type = '')
 		{
-			require(CORE_DIR . 'generate.php');
-			$generate = new Generate();
-			echo $generate->table('test');
+			if(empty($type)) show_error();
+			
+			if($type == 'model')
+			{
+				if($this->input->has_post())
+				{
+					require(CORE_DIR . 'generate.php');
+					$generate = new Generate();
+					
+					$name = $this->input->post('name');
+					$allow = $this->input->post('allow');
+					$creatable = $this->input->post('creatable');
+					$updateable = $this->input->post('updateable');
+					$deletable = $this->input->post('deletable');
+					$description = $this->input->post('description');
+					
+					// Add string quotess for generated file.
+					for($i = 0; $i < count($allow); $i++) $allow[$i] = "'". $allow[$i] ."'";
+					
+					$options = array
+					(
+						'name' => ucfirst($name),
+						'allow' => 'array('.rtrim(implode(', ', $allow)).')',
+						'creatable' => $creatable ? 'true' : 'false',
+						'updateable' => $updateable ? 'true' : 'false',
+						'deletable' => $deletable ? 'true' : 'false',
+						'description' => $description
+					);
+					
+					if($generate->model($name, $options, true))
+					{
+						// Create the table.
+						$model = new Model();
+						// CREATE TABLE test(test_id INTEGER PRIMARY KEY NOT NULL, name TEXT, value TEXT)
+						$model->query('CREATE TABLE IF NOT EXISTS ' . strtolower($name) . '(test_id INTEGER PRIMARY KEY NOT NULL, name TEXT, value TEXT)');
+						
+						$this->session->set('result', 'The model '. strtolower($name) . ' was created successfully.');
+						redirect('admin');
+					}
+					else
+					{
+						redirect('admin/model');
+					}
+				}
+				else
+				{
+					$data = array
+					(
+						'title' => 'Generate Model'
+					);
+					
+					$template = $this->load->view('admin/model');
+					$template->render($data);
+				}
+			}
 		}
 		
 		private function show_db_error($model)
@@ -433,11 +485,8 @@
 						
 						if($allowed)
 						{
-							if(!$model->fields) 
-							{
-								// Fields must be set so user can see it.
-								Pep::show_error(sprintf($this->lang['admin.field_arr_fail'], $file));
-							}
+							// If fields don't exist, skip it.
+							if(count($model->fields) == 0) continue;
 							
 							// Select what to show.
 							$model->from($model->table);

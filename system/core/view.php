@@ -25,7 +25,7 @@
 		public function render($data = null)
 		{
 			// Some basic output handling.
-			array_walk_recursive($data, array($this, 'encode_output'));
+			if(!is_null($data)) array_walk_recursive($data, array($this, 'encode_output'));
 			
 			if(empty($this->theme))
 			{

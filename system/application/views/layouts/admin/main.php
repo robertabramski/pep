@@ -34,7 +34,20 @@
 	        <?php endif; ?>
 	        <?php endif; endforeach; endif; ?>
 	        
-	        <?php //TODO: Add table/model generator. ?>
+	        <?php if(DEV_MODE && $is_admin): ?>
+	        <h3>Dev Tools</h3>
+	        <p>Generate a model class and a corresponding table in the database.</p>
+	        <form action="<?php echo site_url('admin/generate/model'); ?>" method="post">
+	        	<input type="hidden" name="action" value="display">
+	        	<label>Name: </label><input name="name" type="text" />
+	        	<label>Number of Fields: </label><input name="fields" type="text" />
+	        	<input type="submit" value="Submit">
+	        </form>
+	        <p>Manage databases with phpLiteAdmin. Password is admin.</p>
+	        <a href="<?php echo site_url('admin/database'); ?>">phpLiteAdmin</a>
+	        <?php endif; ?>
+	        
+	        <?php //TODO: Add basic generators: controller, helper, language, view, theme. ?>
 	        <?php //TODO: Add database backup. ?>
 	    </div>
 <?php include('footer.php'); ?>

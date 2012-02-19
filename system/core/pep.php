@@ -30,6 +30,10 @@
 		
 		private function __construct()
 		{
+			// Secure system folder if in production mode.
+			if(DEV_MODE) file_put_contents(ROOT_DIR . 'system/.htaccess', '');
+			else file_put_contents(ROOT_DIR . 'system/.htaccess', 'Deny from all');
+			
 			// Add instance model base class for retrieving settings, users.
 			self::$model = new Model();
 			

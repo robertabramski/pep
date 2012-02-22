@@ -10,8 +10,6 @@
 	function current_url() { return Pep::current_url(); }
 	function segment($seg) { return Pep::segment($seg); }
 	
-	//function partial($name) { Pep::partial($name); }
-	
 	function get_roles() { Pep::get_roles(); }
 	
 ?>

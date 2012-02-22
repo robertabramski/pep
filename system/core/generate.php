@@ -72,13 +72,13 @@
 		{
 			return
 			
-			"<?php partial('header'); ?>\n" . 
+			'<?php include $this->partial(\'header\'); ?>' . "\n" . 
 			"\n" .
 					"\t\t<div id=\"content\">\n" .
 				    	"\t\t\t" . '<h1><?php echo $title ?></h1>' . "\n" .
 					"\t\t</div>\n" .
 			"\n" .
-			"<?php partial('footer'); ?>";
+			'<?php include $this->partial(\'footer\'); ?>';
 		}
 		
 		private function get_model_contents()

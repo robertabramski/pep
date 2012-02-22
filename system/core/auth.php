@@ -49,6 +49,11 @@
 			return $this->logged_in;
 		}
 		
+		public function not_logged_in()
+		{
+			return !$this->logged_in;
+		}
+		
 		public function login($user, $pass)
 		{
 			if(Pep::auth_user($user, md5($pass)))

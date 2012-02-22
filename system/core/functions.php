@@ -12,4 +12,6 @@
 	
 	function partial($name) { Pep::partial($name); }
 	
+	function get_roles() { Pep::get_roles(); }
+	
 ?>

@@ -261,6 +261,15 @@
 			return false;
 		}
 		
+		public static function get_roles()
+		{
+			self::$model->from('roles');
+			$rows = self::$model->select('*');
+			
+			foreach($rows as $row) $roles[] = $row['role'];
+			return $roles;
+		}
+		
 		/**
 		 * Gets the active user currently logged in as an array.
 		 * 

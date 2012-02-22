@@ -2,7 +2,7 @@
 
 	class Generate
 	{
-		private function gen($name, $options, $contents)
+		private function run($name, $options, $contents)
 		{
 			require_once(CORE_DIR . 'parser.php');
 			
@@ -15,7 +15,7 @@
 		public function model($name, $options)
 		{
 			chdir(APP_DIR . 'models/');
-			return $this->gen($name, $options, $this->get_model_contents());
+			return $this->run($name, $options, $this->get_model_contents());
 		}
 		
 		private function get_model_contents()
@@ -74,7 +74,6 @@
 				
 			"?>";
 		}
-		
 	}
 	
 ?>

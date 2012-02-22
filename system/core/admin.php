@@ -17,7 +17,7 @@
 		
 		public function index()
 		{
-			if(!$this->auth->logged_in()) redirect('admin/login');
+			if($this->auth->not_logged_in()) redirect('admin/login');
 			
 			$data = array
 			(
@@ -37,7 +37,7 @@
 		
 		public function create($name = '')
 		{
-			if(!$this->auth->logged_in()) redirect('admin/login');
+			if($this->auth->not_logged_in()) redirect('admin/login');
 			if(empty($name)) show_error();
 			
 			if($this->input->has_post())
@@ -155,7 +155,7 @@
 		
 		public function update($name = '', $id = '')
 		{
-			if(!$this->auth->logged_in()) redirect('admin/login');
+			if($this->auth->not_logged_in()) redirect('admin/login');
 			if(empty($name) || empty($id)) show_error();
 			
 			if($this->input->has_post())
@@ -288,7 +288,7 @@
 		
 		public function delete($name = '', $id = '')
 		{
-			if(!$this->auth->logged_in()) redirect('admin/login');
+			if($this->auth->not_logged_in()) redirect('admin/login');
 			if(empty($name) || empty($id)) show_error();
 			
 			// You cannot delete yourself.
@@ -399,7 +399,7 @@
 		
 		public function generate($type = '')
 		{
-			if(!$this->auth->logged_in()) redirect('admin/login');
+			if($this->auth->not_logged_in()) redirect('admin/login');
 			if(empty($type)) show_error();
 			
 			if($type == 'model')
@@ -492,7 +492,7 @@
 		
 		public function database()
 		{
-			if(!$this->auth->logged_in()) redirect('admin/login');
+			if($this->auth->not_logged_in()) redirect('admin/login');
 			
 			$data = array
 			(

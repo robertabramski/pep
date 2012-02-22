@@ -3,10 +3,9 @@
 	    	<?php if($result): ?>
 	    	<p><?php echo $result; ?></p>
 	    	<?php endif; ?>
-	    	<a href="<?php echo site_url('admin/logout'); ?>">Logout</a>
-	        <h1><?php echo $title; ?></h1>
-	        <h2><?php echo $lang['welcome']; ?> <?php echo $user; ?></h2>
+	    	<p><?php echo $lang['welcome']; ?> <?php echo $user; ?> <a href="<?php echo site_url('admin/logout'); ?>">Logout</a></p>
 	        
+	        <h2>Content</h2>
 	        <?php //TODO: Add paging functionality. ?>
 	        <?php if($sections): foreach($sections as $section): if($section['allowed']): ?>
 	        <h3>
@@ -34,20 +33,35 @@
 	        <?php endif; ?>
 	        <?php endif; endforeach; endif; ?>
 	        
-	        <?php if(DEV_MODE && $is_admin): ?>
-	        <h3>Dev Tools</h3>
-	        <p>Generate a model class and a corresponding table in the database.</p>
+	        <h2>Tools</h2>
+	        <?php if(DEV_MODE): ?>
+	        <h3>Generate</h3>
+	        <?php //TODO: Add basic generators: controller, helper, language, view, theme. ?>
+	        <p>Create a model class and a corresponding table in the database.</p>
 	        <form action="<?php echo site_url('admin/generate/model'); ?>" method="post">
 	        	<input type="hidden" name="action" value="display">
 	        	<label>Name: </label><input name="name" type="text" />
 	        	<label>Number of Fields: </label><input name="fields" type="text" />
 	        	<input type="submit" value="Submit">
 	        </form>
-	        <p>Manage databases with phpLiteAdmin. Password is admin.</p>
+	        <p>Create a controller class and a corresponding view.</p>
+	        <form action="<?php echo site_url('admin/generate/controller'); ?>" method="post">
+	        	<input type="hidden" name="action" value="display">
+	        	<label>Name: </label><input name="name" type="text" />
+	        	<input type="submit" value="Submit">
+	        </form>
+	        <h2>Database</h2>
+	        <h3>Manage</h3>
+	        <p>Manage databases with phpLiteAdmin.</p>
+	        <!-- <form action="<?php echo site_url('admin/database'); ?>" target="phpliteadmin" method="post">
+	        	<input type="hidden" name="password" value="admin">
+	        	<input type="hidden" name="remember" value="yes" checked="checked">
+	        	<input type="hidden" name="proc_login" value="true">
+	        	<input type="submit" name="login" value="Log In" class="btn">
+	        </form> -->
 	        <a href="<?php echo site_url('admin/database'); ?>">phpLiteAdmin</a>
 	        <?php endif; ?>
-	        
-	        <?php //TODO: Add basic generators: controller, helper, language, view, theme. ?>
+	        <h3>Backup</h3>
 	        <?php //TODO: Add database backup. ?>
 	    </div>
 <?php include('footer.php'); ?>

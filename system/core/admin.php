@@ -402,6 +402,52 @@
 			if($this->auth->not_logged_in()) redirect('admin/login');
 			if(empty($type)) show_error();
 			
+			if($type == 'controller')
+			{
+				$action = $this->input->post('action');
+				
+				if($action == 'controller')
+				{
+					require(CORE_DIR . 'generate.php');
+					$generate = new Generate();
+					
+					$name = $this->input->post('name');
+					$genview = $this->input->post('genview');
+					$subdir = $this->input->post('subdir');
+					
+					$options = array
+					(
+						'name' 		=> ucfirst($name),
+						'view' 		=> ($subdir ? $subdir.'/' : '') . strtolower($name),
+						'genview' 	=> $genview ? true : false,
+						'subdir'	=> $subdir
+					);
+					
+					if($generate->controller($name, $options))
+					{
+						$this->session->set('result', 'The controller '. strtolower($name) . '.php was created successfully.');
+						redirect('admin');
+					}
+					else
+					{
+						redirect('admin/controller');
+					}
+				}
+				else if($action == 'display')
+				{
+					$name = $this->input->post('name');
+					
+					$data = array
+					(
+						'name'	=> $name,
+						'title' => 'Generate Controller ' . ucfirst($name)
+					);
+					
+					$template = $this->load->view('admin/controller');
+					$template->render($data);
+				}
+			}
+			
 			if($type == 'model')
 			{
 				$action = $this->input->post('action');
@@ -481,7 +527,7 @@
 					(
 						'name'	=> $name,
 						'fields'	=> intval($fields),
-						'title' => 'Generate ' . ucfirst($name)
+						'title' => 'Generate Model ' . ucfirst($name)
 					);
 					
 					$template = $this->load->view('admin/model');

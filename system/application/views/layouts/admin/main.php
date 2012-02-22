@@ -44,7 +44,7 @@
 	        	<label>Number of Fields: </label><input name="fields" type="text" />
 	        	<input type="submit" value="Submit">
 	        </form>
-	        <p>Create a controller class and a corresponding view.</p>
+	        <p>Create a controller class and an optional corresponding view.</p>
 	        <form action="<?php echo site_url('admin/generate/controller'); ?>" method="post">
 	        	<input type="hidden" name="action" value="display">
 	        	<label>Name: </label><input name="name" type="text" />

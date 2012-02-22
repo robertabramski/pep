@@ -18,6 +18,69 @@
 			return $this->run($name, $options, $this->get_model_contents());
 		}
 		
+		public function controller($name, $options)
+		{
+			chdir(APP_DIR . 'controllers/');
+			$controller = $this->run($name, $options, $this->get_controller_contents());
+			
+			if($options['genview'])
+			{
+				chdir(APP_DIR . 'views/layouts');
+				
+				if($options['subdir'])
+				{
+					$subdir = $options['subdir'];
+					
+					if(!file_exists($subdir)) mkdir($subdir);
+					chdir(APP_DIR . 'views/layouts/'.$subdir);
+				}
+				
+				$view = $this->run($name, $options, $this->get_view_contents());
+			}
+			else
+			{
+				$view = true; 
+			}
+			
+			return $controller && $view ? true : false;
+		}
+		
+		private function get_controller_contents()
+		{
+			return
+			
+			"<?php\n" .
+			"\n" .
+				"\tclass {{name}} extends Controller\n" .
+				"\t{\n" .	
+					"\t\tpublic function index()\n" . 
+					"\t\t{\n" .
+						"\t\t\t" . '$data = array' . "\n" . 
+						"\t\t\t(\n" .
+							"\t\t\t\t'title' => '{{name}}',\n" .
+						"\t\t\t);\n" . 
+						"\n" .
+						"\t\t\t" . '$template = $this->load->view(\'{{view}}\');' . "\n" .
+						"\t\t\t" . '$template->render($data);' . "\n" .
+					"\t\t}\n" .
+				"\t}\n" .
+			"\n" .
+			"?>";
+		}
+		
+		private function get_view_contents()
+		{
+			return
+			
+			"<?php partial('header'); ?>\n" . 
+			"\n" .
+					"\t\t<div id=\"content\">\n" .
+				    	"\t\t\t" . '<h1><?php echo $title ?></h1>' . "\n" .
+					"\t\t</div>\n" .
+			"\n" .
+			"<?php partial('footer'); ?>";
+		}
+		
 		private function get_model_contents()
 		{
 			return 

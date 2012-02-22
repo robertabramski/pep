@@ -60,7 +60,7 @@
 			if($name == 'partial')
 			{
 				$parser = new Parser();
-				return $parser->parse(Pep::partial($attributes['name']));
+				return $parser->parse($this->partial($attributes['name']));
 			}
 			else if($name == 'lang')
 			{
@@ -80,6 +80,34 @@
 						Pep::show_error(sprintf('The language file %s.php does not exist.', $language));
 					}
 				}
+			}
+		}
+		
+		/**
+		 * Loads a partial file from either a view or a theme.
+		 * 
+		 * @access	public
+		 * @param 	string $name	The name of the partial to load.
+		 * @return	mixed
+		 * 
+		 */
+		public function partial($name)
+		{
+			$theme = Pep::get_setting('theme');
+			
+			if(!empty($theme)) 
+			{
+				$file = THEME_DIR . $theme . '/partials/' . $name . '.html';
+				
+				if(file_exists($file)) return file_get_contents($file);
+				else Pep::show_error(sprintf('The theme partial file %s.html does not exist.', $name));
+			}
+			else 
+			{
+				$file = APP_DIR . 'views/partials/' . $name . '.php';
+				
+				if(file_exists($file)) return $file;
+				else Pep::show_error(sprintf('The view partial file %s.php does not exist.', $name));
 			}
 		}
 		

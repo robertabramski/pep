@@ -7,4 +7,5 @@
 		<meta name="keywords" content="" />
 	</head>
 	<body>
-	
+		<?php if(DEV_MODE): ?><p>Dev mode is on.</p><?php endif; ?>
+		

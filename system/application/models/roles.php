@@ -8,9 +8,9 @@
 
 			$this->allow = array('admin');
 			$this->creatable = true;
-			$this->updateable = true;
-			$this->deletable = true;
-			$this->description = 'Add, remove and edit user roles.';
+			$this->updateable = false;
+			$this->deletable = false;
+			$this->description = 'Add user roles.';
 			$this->fields = array
 			(
 				'role_id' => array('type' => 'pk', 'name' => 'Key'), 

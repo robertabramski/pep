@@ -402,137 +402,143 @@
 			if($this->auth->not_logged_in()) redirect('admin/login');
 			if(empty($type)) show_error();
 			
-			if($type == 'controller')
+			switch($type)
 			{
-				$action = $this->input->post('action');
-				
-				if($action == 'controller')
-				{
-					require(CORE_DIR . 'generate.php');
-					$generate = new Generate();
-					
-					$name = $this->input->post('name');
-					$genview = $this->input->post('genview');
-					$subdir = $this->input->post('subdir');
-					
-					$options = array
-					(
-						'name' 		=> ucfirst($name),
-						'view' 		=> ($subdir ? $subdir.'/' : '') . strtolower($name),
-						'genview' 	=> $genview ? true : false,
-						'subdir'	=> $subdir
-					);
-					
-					if($generate->controller($name, $options))
-					{
-						$this->session->set('result', 'The controller '. strtolower($name) . '.php was created successfully.');
-						redirect('admin');
-					}
-					else
-					{
-						redirect('admin/controller');
-					}
-				}
-				else if($action == 'display')
-				{
-					$name = $this->input->post('name');
-					
-					$data = array
-					(
-						'name'	=> $name,
-						'title' => 'Generate Controller ' . ucfirst($name)
-					);
-					
-					$template = $this->load->view('admin/controller');
-					$template->render($data);
-				}
+				case 'controller': 	$this->generate_controller(); break;
+				case 'model': 		$this->generate_model(); break;
 			}
+		}
+		
+		private function generate_model()
+		{
+			$action = $this->input->post('action');
 			
-			if($type == 'model')
+			if($action == 'model')
 			{
-				$action = $this->input->post('action');
+				require(CORE_DIR . 'generate.php');
+				$generate = new Generate();
 				
-				if($action == 'model')
+				$name = $this->input->post('name');
+				$allow = $this->input->post('allow');
+				$creatable = $this->input->post('creatable');
+				$updateable = $this->input->post('updateable');
+				$deletable = $this->input->post('deletable');
+				$description = $this->input->post('description');
+				
+				// Add string quotes for generated file.
+				for($i = 0; $i < count($allow); $i++) $allow[$i] = "'". $allow[$i] ."'";
+				
+				$fields = '';
+				$options = array
+				(
+					'name' => ucfirst($name),
+					'allow' => 'array('.rtrim(implode(', ', $allow)).')',
+					'creatable' => $creatable ? 'true' : 'false',
+					'updateable' => $updateable ? 'true' : 'false',
+					'deletable' => $deletable ? 'true' : 'false',
+					'description' => $description
+				);
+				
+				// Build query and field strings.
+				for($i = 0; $i < intval($this->input->post('fields')); $i++)
 				{
-					require(CORE_DIR . 'generate.php');
-					$generate = new Generate();
+					$id = $i + 1;
+					$field = $this->input->post('field'.$id);
+					$type = $this->input->post('type'.$id);
+					$pk = $this->input->post('pk'.$id);
+					$notnull = $this->input->post('notnull'.$id);
+					$default = $this->input->post('default'.$id);
 					
-					$name = $this->input->post('name');
-					$allow = $this->input->post('allow');
-					$creatable = $this->input->post('creatable');
-					$updateable = $this->input->post('updateable');
-					$deletable = $this->input->post('deletable');
-					$description = $this->input->post('description');
+					// Build field parameters. Just is just a start point.
+					$options['fields'] .= "'".$field."' => array(".($pk == 'on' ? "'type' => 'pk'" : "'type' => 'text'").'), '."\n\t\t\t\t";
 					
-					// Add string quotes for generated file.
-					for($i = 0; $i < count($allow); $i++) $allow[$i] = "'". $allow[$i] ."'";
+					// Build the query string.
+					$fields .= $field . ' ' . $type . ($pk == 'on' ? ' PRIMARY KEY' : '') . ($notnull == 'on' ? ' NOT NULL' : '') . ($default ? " DEFAULT $default, " : ', ');
+				}
+				
+				// Clean up white space characters at string end.
+				$options['fields'] = rtrim(rtrim($options['fields']), ', ');
+				
+				if($generate->model($name, $options))
+				{
+					$model = new Model();
+					$query = 'CREATE TABLE IF NOT EXISTS ' . strtolower($name) . '(' . rtrim($fields, ', ') . ')';
 					
-					$fields = '';
-					$options = array
-					(
-						'name' => ucfirst($name),
-						'allow' => 'array('.rtrim(implode(', ', $allow)).')',
-						'creatable' => $creatable ? 'true' : 'false',
-						'updateable' => $updateable ? 'true' : 'false',
-						'deletable' => $deletable ? 'true' : 'false',
-						'description' => $description
-					);
-					
-					// Build query and field strings.
-					for($i = 0; $i < intval($this->input->post('fields')); $i++)
+					if($model->query($query))
 					{
-						$id = $i + 1;
-						$field = $this->input->post('field'.$id);
-						$type = $this->input->post('type'.$id);
-						$pk = $this->input->post('pk'.$id);
-						$notnull = $this->input->post('notnull'.$id);
-						$default = $this->input->post('default'.$id);
-						
-						// Build field parameters. Just is just a start point.
-						$options['fields'] .= "'".$field."' => array(".($pk == 'on' ? "'type' => 'pk'" : "'type' => 'text'").'), '."\n\t\t\t\t";
-						
-						// Build the query string.
-						$fields .= $field . ' ' . $type . ($pk == 'on' ? ' PRIMARY KEY' : '') . ($notnull == 'on' ? ' NOT NULL' : '') . ($default ? " DEFAULT $default, " : ', ');
-					}
-					
-					// Clean up white space characters at string end.
-					$options['fields'] = rtrim(rtrim($options['fields']), ', ');
-					
-					if($generate->model($name, $options))
-					{
-						$model = new Model();
-						$query = 'CREATE TABLE IF NOT EXISTS ' . strtolower($name) . '(' . rtrim($fields, ', ') . ')';
-						
-						if($model->query($query))
-						{
-							$this->session->set('result', 'The model '. strtolower($name) . '.php was created successfully.');
-							redirect('admin');
-						}
-						else
-						{
-							redirect('admin/model');
-						}
+						$this->session->set('result', 'The model '. strtolower($name) . '.php was created successfully.');
+						redirect('admin');
 					}
 					else
 					{
 						redirect('admin/model');
 					}
 				}
-				else if($action == 'display')
+				else
 				{
-					$name = $this->input->post('name');
-					$fields = $this->input->post('fields');
-					
-					$data = array
-					(
-						'name'	=> $name,
-						'fields'	=> intval($fields),
-						'title' => 'Generate Model ' . ucfirst($name)
-					);
-					
-					$template = $this->load->view('admin/model');
-					$template->render($data);
+					redirect('admin/model');
 				}
+			}
+			else if($action == 'display')
+			{
+				$name = $this->input->post('name');
+				$fields = $this->input->post('fields');
+				
+				$data = array
+				(
+					'name'	=> $name,
+					'fields'	=> intval($fields),
+					'title' => 'Generate Model'
+				);
+				
+				$template = $this->load->view('admin/model');
+				$template->render($data);
+			}
+		}
+		
+		private function generate_controller()
+		{
+			$action = $this->input->post('action');
+			
+			if($action == 'controller')
+			{
+				require(CORE_DIR . 'generate.php');
+				$generate = new Generate();
+				
+				$name = $this->input->post('name');
+				$genview = $this->input->post('genview');
+				$subdir = $this->input->post('subdir');
+				
+				$options = array
+				(
+					'name' 		=> ucfirst($name),
+					'view' 		=> ($subdir ? $subdir.'/' : '') . strtolower($name),
+					'genview' 	=> $genview ? true : false,
+					'subdir'	=> $subdir
+				);
+				
+				if($generate->controller($name, $options))
+				{
+					$this->session->set('result', 'The controller '. strtolower($name) . '.php was created successfully.');
+					redirect('admin');
+				}
+				else
+				{
+					redirect('admin/controller');
+				}
+			}
+			else if($action == 'display')
+			{
+				$name = $this->input->post('name');
+				
+				$data = array
+				(
+					'name'	=> $name,
+					'title' => 'Generate Controller'
+				);
+				
+				$template = $this->load->view('admin/controller');
+				$template->render($data);
 			}
 		}
 		

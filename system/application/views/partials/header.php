@@ -2,9 +2,8 @@
 <html>
 	<head>
 		<title><?php echo $title; ?></title>
-		<meta name="author" content="" />
-		<meta name="description" content="" />
-		<meta name="keywords" content="" />
+		<meta name="description" content="<?php echo Pep::get_setting('site_description'); ?>" />
+		<meta name="keywords" content="<?php echo Pep::get_setting('site_keywords'); ?>" />
 	</head>
 	<body>
 		<?php if(DEV_MODE): ?><p>Dev mode is on.</p><?php endif; ?>

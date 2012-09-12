@@ -39,7 +39,7 @@
 							{
 								$result = $this->$rule($input);
 								$result ? $message = '' : $message = sprintf($this->messages[$rule], $key);
-								$results[] = array('rule' => $rule, 'result' => $result, 'message' => $message);
+								$results[] = array('name' => $key, 'rule' => $rule, 'result' => $result, 'message' => $message);
 							}
 							else
 							{
@@ -92,7 +92,8 @@
 		public function url($value)
 		{
 			if(empty($value)) return true;
-			$valid = filter_var($value, FILTER_VALIDATE_URL);
+			$options = array('options' => '|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i');
+			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;		
 		}
 		
@@ -160,7 +161,7 @@
 		public function alpha_num_plus($value)
 		{
 			if(empty($value)) return true;
-			$options = array('options' => array('regexp' => '/^([a-z0-9_- ])+$/i'));
+			$options = array('options' => array('regexp' => '/^([a-z0-9 _-])+$/i'));
 			$valid = filter_var($value, FILTER_VALIDATE_REGEXP, $options);
 			return $valid ? true : false;
 		}

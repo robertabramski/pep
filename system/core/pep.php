@@ -155,7 +155,8 @@
 		}
 		
 		/**
-		 * Returns the current url.
+		 * Returns the current url. Uses the Apache specific server variable 
+		 * REQUEST_URI to determine the current location.
 		 * 
 		 * @access	public
 		 * @return	string
@@ -233,6 +234,13 @@
 			return false;
 		}
 		
+		/**
+		 * Gets all the possible user roles in an array.
+		 * 
+		 * @access public
+		 * @return array
+		 * 
+		 */
 		public static function get_roles()
 		{
 			self::$model->from('roles');

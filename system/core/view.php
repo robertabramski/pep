@@ -62,6 +62,10 @@
 				$parser = new Parser();
 				return $parser->parse($this->theme_partial($attributes['name']));
 			}
+			else if($name == 'setting')
+			{
+				return Pep::get_setting($attributes['name']);
+			}
 			else if($name == 'lang')
 			{
 				$language = Pep::get_setting('language');

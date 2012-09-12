@@ -6,8 +6,8 @@
 			<form action="<?php echo site_url('admin/generate/model'); ?>" method="post">
 				<input type="hidden" name="action" value="model">
 				<input type="hidden" name="fields" value="<?php echo $fields; ?>">
-				<input type="hidden" name="name" value="<?php echo $name; ?>" />
 				<h4>Model Options</h4>
+				<label>Name: </label><input type="text" name="name" value="<?php echo $name; ?>" /><br />
 				<label>Description: </label><textarea name="description"></textarea><br />
 				<label>Creatable: </label><input name="creatable" type="checkbox" checked="checked" />
 				<label>Updateable: </label><input name="updateable" type="checkbox" checked="checked" />

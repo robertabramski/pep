@@ -60,6 +60,9 @@
 				// Trim url path of its slash.
 				$url = trim(preg_replace('/'. str_replace('/', '\/', str_replace('index.php', '', $script_url)) .'/', '', $request_url, 1), '/');
 			}
+			
+			// Remove string after possible question mark
+			if (stripos($url, '?') > 0) $url = substr($url, 0, stripos($url, '?'));
 		    
 			// Get url segments.
 			$segments = explode('/', $url);
